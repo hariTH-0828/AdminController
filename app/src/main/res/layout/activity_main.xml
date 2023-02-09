@@ -37,7 +37,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,12 +81,6 @@
                 android:layout_weight="@integer/material_motion_duration_long_2"
                 android:orientation="horizontal">
 
-                <RadioGroup
-                    android:id="@+id/groupradio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
                     <RadioButton
                         android:id="@+id/radio_male"
                         android:layout_width="wrap_content"
@@ -104,8 +98,6 @@
                         android:fontFamily="@font/josefin_bold"
                         android:onClick="onRadioButtonClicked"
                         android:text="@string/radio_female" />
-                    "
-                </RadioGroup>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -129,6 +121,7 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editFatherName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -160,6 +153,7 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editVoterID"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -190,8 +184,10 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxWidth="480dp"
                     android:fontFamily="@font/josefin_bold"
                     android:hint="@string/label_phone"
                     android:inputType="number"
@@ -222,6 +218,7 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -254,12 +251,12 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editAssembly"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
                     android:hint="@string/label_assembly"
                     android:inputType="text"
-                    android:textColorHint="#757575"
                     android:textSize="15sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -285,6 +282,7 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editWard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -315,6 +313,7 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editEpic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -332,7 +331,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/btn_push" />
+                android:text="@string/btn_push"
+                android:onClick="onPushClick"/>
         </LinearLayout>
 
     </ScrollView>
