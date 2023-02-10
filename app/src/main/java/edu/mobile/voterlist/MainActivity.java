@@ -5,14 +5,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
+    AutoCompleteTextView autoCompleteTextView;
     // Initialize database variables
     String name, fatherName, voterId, phoneNo, state, assembly, wardNo, epicNo;
 
@@ -30,23 +35,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        autoCompleteTextView = findViewById(R.id.editState);
+        String[] state = new String[]{
+           "Andhra Pradesh","Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa",
+           "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+           "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Puducherry", "Rajasthan",
+           "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.dropdown_list, state);
+        autoCompleteTextView.setAdapter(adapter);
+
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
         editVoterID = findViewById(R.id.editVoterID);
         editPhone = findViewById(R.id.editPhone);
-        editState = findViewById(R.id.editState);
         editAssembly = findViewById(R.id.editAssembly);
         editWard = findViewById(R.id.editWard);
         editEpic = findViewById(R.id.editEpic);
-        radioGroup = findViewById(R.id.groupradio);
+        radioGroup = findViewById(R.id.groupRadio);
         pushBtn = findViewById(R.id.pushBtn);
+
+        /*autoCompleteTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getApplicationContext(), ""+autoCompleteTextView.getText().toString(), Toast.LENGTH_LONG).show();
+            }
+        });*/
+
     }
 
     public void onRadioButtonClicked(View view) {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         genderBtn = findViewById(selectedId);
 
-        getGender = genderBtn.toString();
+        getGender = genderBtn.getText().toString();
         Log.d("Gender", getGender);
     }
 
@@ -55,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         fatherName = editFatherName.getText().toString().trim();
         voterId = editVoterID.getText().toString();
         phoneNo = editPhone.getText().toString();
-        state = editState.getText().toString();
+        state = autoCompleteTextView.getText().toString();
         assembly = editAssembly.getText().toString();
         wardNo = editWard.getText().toString();
         epicNo = editEpic.getText().toString();
@@ -65,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         if(!name.isEmpty() && !fatherName.isEmpty() && !voterId.isEmpty() && !phoneNo.isEmpty() && !getGender.isEmpty()
                 && !state.isEmpty() && !assembly.isEmpty() && !wardNo.isEmpty() && !epicNo.isEmpty()) {
 
-            Log.d("Status", name+" "+fatherName+" "+voterId);
+            Log.d("Button_status", name+" "+fatherName+" "+voterId+" "+state);
         }
 
     }

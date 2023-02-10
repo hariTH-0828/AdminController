@@ -81,6 +81,12 @@
                 android:layout_weight="@integer/material_motion_duration_long_2"
                 android:orientation="horizontal">
 
+                <RadioGroup
+                    android:id="@+id/groupRadio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <RadioButton
                         android:id="@+id/radio_male"
                         android:layout_width="wrap_content"
@@ -98,6 +104,7 @@
                         android:fontFamily="@font/josefin_bold"
                         android:onClick="onRadioButtonClicked"
                         android:text="@string/radio_female" />
+                </RadioGroup>
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -187,29 +194,28 @@
                     android:id="@+id/editPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxWidth="480dp"
                     android:fontFamily="@font/josefin_bold"
                     android:hint="@string/label_phone"
                     android:inputType="number"
+                    android:maxWidth="480dp"
                     android:textColorHint="#757575"
                     android:textSize="15sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--        State_DropDown Box-->
+            <!-- TODO setDropDown -->
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -217,32 +223,30 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.274">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/editState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/josefin_bold"
                     android:hint="@string/label_state"
-                    android:inputType="text"
-                    android:textColorHint="#757575"
-                    android:textSize="15sp" />
-
+                    android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--Assembly_constitution DropDown Box-->
+
+            <!-- TODO setDropDown -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -331,8 +335,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:text="@string/btn_push"
-                android:onClick="onPushClick"/>
+                android:onClick="onPushClick"
+                android:text="@string/btn_push" />
         </LinearLayout>
 
     </ScrollView>
