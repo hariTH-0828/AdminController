@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,21 +46,28 @@ public class MainActivity extends AppCompatActivity {
         editWard = findViewById(R.id.editWard);
         editEpic = findViewById(R.id.editEpic);
         radioGroup = findViewById(R.id.groupRadio);
-
-
-        // Dropdown for State
-        String[] state = new String[]{
-            "Andhra Pradesh","Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa",
-            "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
-            "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Puducherry", "Rajasthan",
-            "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal"
-        };
-
         autoCompleteTextView = findViewById(R.id.editState);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, state);
-        autoCompleteTextView.setAdapter(adapter);
 
-        // Dropdown for District
+        // Dropdown -> States
+        reference = FirebaseDatabase.getInstance().getReference("states");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<String> stateList = new ArrayList<>();
+                for(DataSnapshot childNode : snapshot.getChildren()){
+                    String value = childNode.getValue(String.class);
+                    stateList.add(value);
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, stateList);
+                autoCompleteTextView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -106,29 +114,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getUser(View view) {
-        name = editName.getText().toString().trim();
-
-        if(!name.isEmpty()){
-            readData(name);
-        }else{
-            Toast.makeText(getApplicationContext(), "Name is Empty", Toast.LENGTH_SHORT).show();
-        }
+        state = autoCompleteTextView.getText().toString();
+        readData(state);
     }
 
-    private void readData(String name) {
-        reference = FirebaseDatabase.getInstance().getReference("Users");
-        reference.child(name).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+    private void readData(String state) {
+        reference = FirebaseDatabase.getInstance().getReference("District");
+        reference.child(state).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful() && task.getResult().exists()){
                     DataSnapshot snapshot = task.getResult();
-                    String username = String.valueOf(snapshot.child("name").getValue());
+                    String district = String.valueOf(snapshot.child("0").getValue());
 
-                    Toast.makeText(getApplicationContext(), "username is "+username, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "District is "+district, Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getApplicationContext(), "Failed to read", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+
 }
