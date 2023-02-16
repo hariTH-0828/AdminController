@@ -2,16 +2,16 @@ package edu.mobile.voterlist;
 
 public class Users {
 
-    String name, fatherName, gender, voterId, phoneNo, state, assembly, wardNo, epicNo;
+    String name, fatherName, gender, phoneNo, state, assembly, wardNo, epicNo;
 
     public Users() {
+
     }
 
-    public Users(String name, String fatherName, String gender, String voterId, String phoneNo, String state, String assembly, String wardNo, String epicNo){
+    public Users(String name, String fatherName, String gender, String phoneNo, String state, String assembly, String wardNo, String epicNo){
         this.name = name;
         this.fatherName = fatherName;
         this.gender = gender;
-        this.voterId = voterId;
         this.phoneNo = phoneNo;
         this.state = state;
         this.assembly = assembly;
@@ -41,14 +41,6 @@ public class Users {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    public String getVoterId() {
-        return voterId;
-    }
-
-    public void setVoterId(String voterId) {
-        this.voterId = voterId;
     }
 
     public String getPhoneNo() {
