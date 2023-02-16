@@ -14,10 +14,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.nio.charset.StandardCharsets;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     RadioButton genderBtn;
 
+    DatabaseReference reference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        autoCompleteTextView = findViewById(R.id.editState);
 
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
@@ -44,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         editEpic = findViewById(R.id.editEpic);
         radioGroup = findViewById(R.id.groupRadio);
 
+
+        // Dropdown for State
         String[] state = new String[]{
             "Andhra Pradesh","Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Delhi", "Goa",
             "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
@@ -51,8 +55,11 @@ public class MainActivity extends AppCompatActivity {
             "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand", "Uttar Pradesh", "West Bengal"
         };
 
+        autoCompleteTextView = findViewById(R.id.editState);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, state);
         autoCompleteTextView.setAdapter(adapter);
+
+        // Dropdown for District
 
     }
 
@@ -96,5 +103,32 @@ public class MainActivity extends AppCompatActivity {
         }else{
             Toast.makeText(getApplicationContext(), "Push Failed!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void getUser(View view) {
+        name = editName.getText().toString().trim();
+
+        if(!name.isEmpty()){
+            readData(name);
+        }else{
+            Toast.makeText(getApplicationContext(), "Name is Empty", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void readData(String name) {
+        reference = FirebaseDatabase.getInstance().getReference("Users");
+        reference.child(name).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful() && task.getResult().exists()){
+                    DataSnapshot snapshot = task.getResult();
+                    String username = String.valueOf(snapshot.child("name").getValue());
+
+                    Toast.makeText(getApplicationContext(), "username is "+username, Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(), "Failed to read", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

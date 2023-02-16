@@ -306,6 +306,16 @@
                 android:layout_marginBottom="20dp"
                 android:onClick="onPushClick"
                 android:text="@string/btn_push" />
+
+            <Button
+                android:id="@+id/readBtn"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="getUser"
+                android:text="Get Name" />
         </LinearLayout>
 
     </ScrollView>
