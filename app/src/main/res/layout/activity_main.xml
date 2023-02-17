@@ -203,10 +203,7 @@
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <!-- TODO setDropDown -->
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -217,6 +214,7 @@
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -224,15 +222,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.274">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editAssembly"
+                <AutoCompleteTextView
+                    android:id="@+id/editDistrict"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="@string/label_district"
                     android:fontFamily="@font/josefin_bold"
-                    android:hint="@string/label_assembly"
-                    android:inputType="text"
-                    android:textSize="15sp" />
-
+                    />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--Ward number-->
@@ -308,7 +304,7 @@
                 android:onClick="onPushClick"
                 android:text="@string/btn_push" />
 
-            <Button
+           <!-- <Button
                 android:id="@+id/readBtn"
                 android:layout_width="150dp"
                 android:layout_height="50dp"
@@ -316,7 +312,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:onClick="getUser"
-                android:text="Get Name" />
+                android:text="Get Name" />-->
 
         </LinearLayout>
 
