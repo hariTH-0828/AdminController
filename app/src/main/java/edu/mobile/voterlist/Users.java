@@ -2,14 +2,15 @@ package edu.mobile.voterlist;
 
 public class Users {
 
-    String name, fatherName, gender, phoneNo, state, district, wardNo, epicNo;
+    String name, dateOfBirth, fatherName, gender, phoneNo, state, district, wardNo, epicNo;
 
     public Users() {
 
     }
 
-    public Users(String name, String fatherName, String gender, String phoneNo, String state, String district, String wardNo, String epicNo){
+    public Users(String name, String dateOfBirth, String fatherName, String gender, String phoneNo, String state, String district, String wardNo, String epicNo){
         this.name = name;
+        this.dateOfBirth = dateOfBirth;
         this.fatherName = fatherName;
         this.gender = gender;
         this.phoneNo = phoneNo;
@@ -81,6 +82,14 @@ public class Users {
 
     public void setEpicNo(String epicNo) {
         this.epicNo = epicNo;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
 }

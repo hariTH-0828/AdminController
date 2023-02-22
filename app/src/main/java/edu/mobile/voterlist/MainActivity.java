@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -14,6 +15,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,14 +29,17 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView;
-    String name, fatherName, phoneNo, state, district, wardNo, epicNo;
-    EditText editName, editFatherName, editPhone, editWard, editEpic;
+    AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
+    String name, fatherName, phoneNo, state, district, wardNo, epicNo, dateOfBirth;
+    EditText editName, editFatherName, editPhone, editWard, editEpic, editDob;
+    TextInputLayout datePicker;
     String getGender;
     RadioGroup radioGroup;
     RadioButton genderBtn;
-
     DatabaseReference reference;
+
+    MaterialDatePicker.Builder<? extends Long> materialDateBuilder = MaterialDatePicker.Builder.datePicker();
+    final MaterialDatePicker<? extends Object> materialDatePicker = materialDateBuilder.build();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +52,18 @@ public class MainActivity extends AppCompatActivity {
         editWard = findViewById(R.id.editWard);
         editEpic = findViewById(R.id.editEpic);
         radioGroup = findViewById(R.id.groupRadio);
+        editDob = findViewById(R.id.editDateOfBirth);
         autoCompleteStateView = findViewById(R.id.editState);
         autoCompleteDistrictView = findViewById(R.id.editDistrict);
+        autoCompleteAssemblyView = findViewById(R.id.editAssembly);
+        datePicker = findViewById(R.id.textLayoutDate);
 
+        datePicker.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onDatePicker(view);
+            }
+        });
 
         // Dropdown -> States
         reference = FirebaseDatabase.getInstance().getReference("states");
@@ -75,14 +91,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 state = autoCompleteStateView.getText().toString();
-                if(!state.isEmpty()){
+                if(!state.isEmpty()) {
 
                     DatabaseReference districtRef = FirebaseDatabase.getInstance().getReference("District").child(state);
                     districtRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             ArrayList<String> districtList = new ArrayList<>();
-                            for(DataSnapshot childNode : snapshot.getChildren()){
+                            for (DataSnapshot childNode : snapshot.getChildren()) {
                                 String value = childNode.getValue(String.class);
                                 districtList.add(value);
                             }
@@ -97,11 +113,42 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    Toast.makeText(getApplicationContext(), "State is Empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "select state", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        // Dropdown -> Assembly
+        autoCompleteAssemblyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                district = autoCompleteDistrictView.getText().toString();
+                if(!district.isEmpty()){
+
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    reference = database.getReference("Assembly/"+district);
+
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            ArrayList<String> assemblyList = new ArrayList<>();
+                            for(DataSnapshot childNode : snapshot.getChildren()){
+                                String value = childNode.getValue(String.class);
+                                assemblyList.add(value);
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
+                            autoCompleteAssemblyView.setAdapter(adapter);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else Toast.makeText(getApplicationContext(), "Select District", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // RadioButton -> Gender
@@ -115,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
     // Create user profiles
     public void onPushClick(View view) {
         name = editName.getText().toString().trim();
+        dateOfBirth = editDob.getText().toString().trim();
         fatherName = editFatherName.getText().toString().trim();
         phoneNo = editPhone.getText().toString();
         state = autoCompleteStateView.getText().toString();
@@ -128,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         if(!name.isEmpty() && !fatherName.isEmpty() && !phoneNo.isEmpty() && !state.isEmpty() && !district.isEmpty()
             && !wardNo.isEmpty() && !epicNo.isEmpty() && !getGender.isEmpty()){
 
-            Users user = new Users(name, fatherName, getGender, phoneNo, state, district, wardNo, epicNo);
+            Users user = new Users(name, dateOfBirth, fatherName, getGender, phoneNo, state, district, wardNo, epicNo);
             reference.child(name).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -137,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             editName.setText("");
+            editDob.setText("");
             editFatherName.setText("");
             editPhone.setText("");
             editWard.setText("");
@@ -146,4 +195,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void onDatePicker(View view) {
+        materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
+
+        materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> {
+            editDob.setText(materialDatePicker.getHeaderText());
+        });
+    }
 }
