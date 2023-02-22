@@ -58,12 +58,7 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteAssemblyView = findViewById(R.id.editAssembly);
         datePicker = findViewById(R.id.textLayoutDate);
 
-        datePicker.setEndIconOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onDatePicker(view);
-            }
-        });
+        datePicker.setEndIconOnClickListener(this::onDatePicker);
 
         // Dropdown -> States
         reference = FirebaseDatabase.getInstance().getReference("states");
@@ -87,67 +82,61 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Dropdown -> District
-        autoCompleteDistrictView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                state = autoCompleteStateView.getText().toString();
-                if(!state.isEmpty()) {
+        autoCompleteDistrictView.setOnClickListener(view -> {
+            state = autoCompleteStateView.getText().toString();
+            if(!state.isEmpty()) {
 
-                    DatabaseReference districtRef = FirebaseDatabase.getInstance().getReference("District").child(state);
-                    districtRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            ArrayList<String> districtList = new ArrayList<>();
-                            for (DataSnapshot childNode : snapshot.getChildren()) {
-                                String value = childNode.getValue(String.class);
-                                districtList.add(value);
-                            }
-
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
-                            autoCompleteDistrictView.setAdapter(adapter);
+                DatabaseReference districtRef = FirebaseDatabase.getInstance().getReference("District").child(state);
+                districtRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<String> districtList = new ArrayList<>();
+                        for (DataSnapshot childNode : snapshot.getChildren()) {
+                            String value = childNode.getValue(String.class);
+                            districtList.add(value);
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else{
-                    Toast.makeText(getApplicationContext(), "select state", Toast.LENGTH_SHORT).show();
-                }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
+                        autoCompleteDistrictView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else{
+                Toast.makeText(getApplicationContext(), "select state", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Dropdown -> Assembly
-        autoCompleteAssemblyView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                district = autoCompleteDistrictView.getText().toString();
-                if(!district.isEmpty()){
+        autoCompleteAssemblyView.setOnClickListener(view -> {
+            district = autoCompleteDistrictView.getText().toString();
+            if(!district.isEmpty()){
 
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    reference = database.getReference("Assembly/"+district);
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                reference = database.getReference("Assembly/"+district);
 
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            ArrayList<String> assemblyList = new ArrayList<>();
-                            for(DataSnapshot childNode : snapshot.getChildren()){
-                                String value = childNode.getValue(String.class);
-                                assemblyList.add(value);
-                            }
-
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
-                            autoCompleteAssemblyView.setAdapter(adapter);
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<String> assemblyList = new ArrayList<>();
+                        for(DataSnapshot childNode : snapshot.getChildren()){
+                            String value = childNode.getValue(String.class);
+                            assemblyList.add(value);
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else Toast.makeText(getApplicationContext(), "Select District", Toast.LENGTH_SHORT).show();
-            }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
+                        autoCompleteAssemblyView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else Toast.makeText(getApplicationContext(), "Select District", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -173,16 +162,11 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("Users");
 
-        if(!name.isEmpty() && !fatherName.isEmpty() && !phoneNo.isEmpty() && !state.isEmpty() && !district.isEmpty()
+        if(!name.isEmpty() && !dateOfBirth.isEmpty() && !fatherName.isEmpty() && !phoneNo.isEmpty() && !state.isEmpty() && !district.isEmpty()
             && !wardNo.isEmpty() && !epicNo.isEmpty() && !getGender.isEmpty()){
 
             Users user = new Users(name, dateOfBirth, fatherName, getGender, phoneNo, state, district, wardNo, epicNo);
-            reference.child(name).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    Toast.makeText(getApplicationContext(), "Add user successfully", Toast.LENGTH_LONG).show();
-                }
-            });
+            reference.child(name).setValue(user).addOnCompleteListener(task -> Toast.makeText(getApplicationContext(), "Add user successfully", Toast.LENGTH_LONG).show());
 
             editName.setText("");
             editDob.setText("");
@@ -198,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDatePicker(View view) {
         materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
 
-        materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> {
-            editDob.setText(materialDatePicker.getHeaderText());
-        });
+        materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> editDob.setText(materialDatePicker.getHeaderText()));
     }
 }

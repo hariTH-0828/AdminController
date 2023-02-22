@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">VoterList</string>
-    <string name="label_name">Name</string>
+    <string name="app_name">Admin vote</string>
+    <string name="label_name">First Name</string>
+    <string name="label_lastName">Last Name</string>
     <string name="label_dob">Date of Birth</string>
-    <string name="label_head">update user detail</string>
+    <string name="label_head">Create user</string>
     <string name="label_voter">Voter ID</string>
     <string name="label_phone">Phone no</string>
     <string name="label_fatherName">Father Name</string>
@@ -16,4 +17,6 @@
 
     <string name="radio_male">Male</string>
     <string name="radio_female">Female</string>
+    <string name="radio_trans_gender">Trans_Gender</string>
+    <string name="radio_nomention">No Mention</string>
 </resources>
