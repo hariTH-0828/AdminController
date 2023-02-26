@@ -150,6 +150,11 @@ public class MainActivity extends AppCompatActivity {
 
     // Create user profiles
     public void onPushClick(View view) {
+        saveData();
+//        resetPage();
+    }
+
+    private void saveData() {
         name = editName.getText().toString().trim();
         dateOfBirth = editDob.getText().toString().trim();
         fatherName = editFatherName.getText().toString().trim();
@@ -167,21 +172,30 @@ public class MainActivity extends AppCompatActivity {
 
             Users user = new Users(name, dateOfBirth, fatherName, getGender, phoneNo, state, district, wardNo, epicNo);
             reference.child(name).setValue(user).addOnCompleteListener(task -> Toast.makeText(getApplicationContext(), "Add user successfully", Toast.LENGTH_LONG).show());
+            resetPage();
 
-            editName.setText("");
-            editDob.setText("");
-            editFatherName.setText("");
-            editPhone.setText("");
-            editWard.setText("");
-            editEpic.setText("");
         }else{
             Toast.makeText(getApplicationContext(), "Push Failed!", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void resetPage() {
+        editName.setText("");
+        editDob.setText("");
+        editFatherName.setText("");
+        editPhone.setText("");
+        editWard.setText("");
+        editEpic.setText("");
+        autoCompleteStateView.setText("");
+        autoCompleteStateView.clearFocus();
+        autoCompleteDistrictView.setText("");
+        autoCompleteDistrictView.clearFocus();
+        autoCompleteAssemblyView.setText("");
+        autoCompleteAssemblyView.clearFocus();
+    }
+
     public void onDatePicker(View view) {
         materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
-
         materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> editDob.setText(materialDatePicker.getHeaderText()));
     }
 }
