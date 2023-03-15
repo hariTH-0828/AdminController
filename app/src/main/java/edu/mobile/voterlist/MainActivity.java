@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -13,8 +12,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
@@ -24,7 +21,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import edu.mobile.voterlist.model.States;
+import edu.mobile.voterlist.retrofit.RetrofitService;
+import edu.mobile.voterlist.retrofit.StatesApi;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     RadioButton genderBtn;
     DatabaseReference reference;
 
+
     MaterialDatePicker.Builder<? extends Long> materialDateBuilder = MaterialDatePicker.Builder.datePicker();
     final MaterialDatePicker<? extends Object> materialDatePicker = materialDateBuilder.build();
 
@@ -45,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadStates();
 
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
@@ -59,85 +70,32 @@ public class MainActivity extends AppCompatActivity {
         datePicker = findViewById(R.id.textLayoutDate);
 
         datePicker.setEndIconOnClickListener(this::onDatePicker);
+    }
 
-        // Dropdown -> States
-        reference = FirebaseDatabase.getInstance().getReference("states");
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<String> stateList = new ArrayList<>();
-                for(DataSnapshot childNode : snapshot.getChildren()){
-                    String value = childNode.getValue(String.class);
-                    stateList.add(value);
-                }
+    private void loadStates() {
+        RetrofitService retrofitService = new RetrofitService();
+        StatesApi statesApi= retrofitService.getRetrofit().create(StatesApi.class);
 
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, stateList);
-                autoCompleteStateView.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Dropdown -> District
-        autoCompleteDistrictView.setOnClickListener(view -> {
-            state = autoCompleteStateView.getText().toString();
-            if(!state.isEmpty()) {
-
-                DatabaseReference districtRef = FirebaseDatabase.getInstance().getReference("District").child(state);
-                districtRef.addValueEventListener(new ValueEventListener() {
+        statesApi.getAllStates()
+                .enqueue(new Callback<List<States>>() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<String> districtList = new ArrayList<>();
-                        for (DataSnapshot childNode : snapshot.getChildren()) {
-                            String value = childNode.getValue(String.class);
-                            districtList.add(value);
+                    public void onResponse(@NonNull Call<List<States>> call, @NonNull Response<List<States>> response) {
+                        List<States> states = response.body();
+                        List<String> statesList = new ArrayList<>();
+
+                        assert states != null;
+                        for(States item : states){
+                            statesList.add(item.getState());
                         }
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
-                        autoCompleteDistrictView.setAdapter(adapter);
+                        Toast.makeText(MainActivity.this, "Load Complete..", Toast.LENGTH_SHORT).show();
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, statesList);
+                        autoCompleteStateView.setAdapter(adapter);
                     }
-
                     @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
+                    public void onFailure(@NonNull Call<List<States>> call, @NonNull Throwable t) {
+                        Toast.makeText(MainActivity.this, "load failed..", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }else{
-                Toast.makeText(getApplicationContext(), "select state", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // Dropdown -> Assembly
-        autoCompleteAssemblyView.setOnClickListener(view -> {
-            district = autoCompleteDistrictView.getText().toString();
-            if(!district.isEmpty()){
-
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                reference = database.getReference("Assembly/"+district);
-
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<String> assemblyList = new ArrayList<>();
-                        for(DataSnapshot childNode : snapshot.getChildren()){
-                            String value = childNode.getValue(String.class);
-                            assemblyList.add(value);
-                        }
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
-                        autoCompleteAssemblyView.setAdapter(adapter);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(getApplicationContext(), "Crash", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }else Toast.makeText(getApplicationContext(), "Select District", Toast.LENGTH_SHORT).show();
-        });
     }
 
     // RadioButton -> Gender
@@ -151,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     // Create user profiles
     public void onPushClick(View view) {
         saveData();
-//        resetPage();
+        resetPage();
     }
 
     private void saveData() {
@@ -169,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(!name.isEmpty() && !dateOfBirth.isEmpty() && !fatherName.isEmpty() && !phoneNo.isEmpty() && !state.isEmpty() && !district.isEmpty()
             && !wardNo.isEmpty() && !epicNo.isEmpty() && !getGender.isEmpty()){
+
+
 
             Users user = new Users(name, dateOfBirth, fatherName, getGender, phoneNo, state, district, wardNo, epicNo);
             reference.child(name).setValue(user).addOnCompleteListener(task -> Toast.makeText(getApplicationContext(), "Add user successfully", Toast.LENGTH_LONG).show());

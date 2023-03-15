@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Admin vote</string>
-    <string name="label_name">First Name</string>
+    <string name="label_name">Name</string>
     <string name="label_lastName">Last Name</string>
     <string name="label_dob">Date of Birth</string>
     <string name="label_head">Create user</string>
     <string name="label_voter">Voter ID</string>
     <string name="label_phone">Phone no</string>
+    <string name="label_aadhaar">Aadhaar No</string>
     <string name="label_fatherName">Father Name</string>
     <string name="label_ward">Ward No</string>
     <string name="label_state">State</string>
