@@ -1,5 +1,7 @@
 package edu.mobile.voterlist;
 
+import edu.mobile.voterlist.model.Person;
+
 public class Voter {
     private Person person;
 

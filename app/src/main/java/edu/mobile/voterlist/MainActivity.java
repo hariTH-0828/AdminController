@@ -3,10 +3,10 @@ package edu.mobile.voterlist;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -15,21 +15,16 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.model.States;
+import edu.mobile.voterlist.api.PersonApi;
 import edu.mobile.voterlist.retrofit.RetrofitService;
-import edu.mobile.voterlist.retrofit.StatesApi;
+import edu.mobile.voterlist.api.StatesApi;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,14 +33,13 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
-    String name, fatherName, phoneNo, state, district, wardNo, epicNo, dateOfBirth;
-    EditText editName, editFatherName, editPhone, editWard, editEpic, editDob;
+    String name, fatherName, phoneNo, state, district, age, aadhaar_number, dateOfBirth, getGender;
+    int stateId;
+    EditText editName, editFatherName, editPhone, editWard, editEpic, editDob, editAadhaar;
     TextInputLayout datePicker;
-    String getGender;
+    Button saveBtn;
     RadioGroup radioGroup;
     RadioButton genderBtn;
-    DatabaseReference reference;
-
 
     MaterialDatePicker.Builder<? extends Long> materialDateBuilder = MaterialDatePicker.Builder.datePicker();
     final MaterialDatePicker<? extends Object> materialDatePicker = materialDateBuilder.build();
@@ -55,13 +49,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadStates();
-
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
         editPhone = findViewById(R.id.editPhone);
         editWard = findViewById(R.id.editWard);
         editEpic = findViewById(R.id.editEpic);
+        editAadhaar = findViewById(R.id.editAadhaar);
         radioGroup = findViewById(R.id.groupRadio);
         editDob = findViewById(R.id.editDateOfBirth);
         autoCompleteStateView = findViewById(R.id.editState);
@@ -70,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         datePicker = findViewById(R.id.textLayoutDate);
 
         datePicker.setEndIconOnClickListener(this::onDatePicker);
+        saveBtn = findViewById(R.id.pushBtn);
+
+        loadStates();
     }
 
     private void loadStates() {
@@ -87,13 +83,12 @@ public class MainActivity extends AppCompatActivity {
                         for(States item : states){
                             statesList.add(item.getState());
                         }
-                        Toast.makeText(MainActivity.this, "Load Complete..", Toast.LENGTH_SHORT).show();
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, statesList);
                         autoCompleteStateView.setAdapter(adapter);
                     }
                     @Override
                     public void onFailure(@NonNull Call<List<States>> call, @NonNull Throwable t) {
-                        Toast.makeText(MainActivity.this, "load failed..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "states load failed..", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -103,40 +98,70 @@ public class MainActivity extends AppCompatActivity {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         genderBtn = findViewById(selectedId);
         getGender = genderBtn.getText().toString();
-        Log.d("Gender", getGender);
+        Toast.makeText(getApplicationContext(), getGender, Toast.LENGTH_SHORT).show();
     }
 
-    // Create user profiles
-    public void onPushClick(View view) {
-        saveData();
-        resetPage();
-    }
+   public void onPushClick(View view) {
+       savePerson();
+   }
 
-    private void saveData() {
+    private void savePerson() {
+        Person person = new Person();
+        RetrofitService retrofitService = new RetrofitService();
+        PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
+
         name = editName.getText().toString().trim();
-        dateOfBirth = editDob.getText().toString().trim();
         fatherName = editFatherName.getText().toString().trim();
         phoneNo = editPhone.getText().toString();
+        age = editWard.getText().toString();
+        aadhaar_number = editAadhaar.getText().toString();
         state = autoCompleteStateView.getText().toString();
-        district = autoCompleteDistrictView.getText().toString();
-        wardNo = editWard.getText().toString();
-        epicNo = editEpic.getText().toString();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("Users");
+        getStateIdByName(state);
+        Toast.makeText(MainActivity.this, stateId, Toast.LENGTH_SHORT).show();
 
-        if(!name.isEmpty() && !dateOfBirth.isEmpty() && !fatherName.isEmpty() && !phoneNo.isEmpty() && !state.isEmpty() && !district.isEmpty()
-            && !wardNo.isEmpty() && !epicNo.isEmpty() && !getGender.isEmpty()){
+        person.setName(name);
+        person.setFatherName(fatherName);
+        person.setAge(Integer.parseInt(age));
+        person.setPhoneNumber(phoneNo);
+        person.setAadhaarNumber(aadhaar_number);
+        person.setStateId(stateId);
+        person.setGender(getGender);
 
+        personApi.save(person)
+                .enqueue(new Callback<Person>() {
+                    @Override
+                    public void onResponse(Call<Person> call, Response<Person> response) {
+                        Toast.makeText(MainActivity.this, "save person successful...", Toast.LENGTH_SHORT).show();
+                    }
 
+                    @Override
+                    public void onFailure(Call<Person> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
-            Users user = new Users(name, dateOfBirth, fatherName, getGender, phoneNo, state, district, wardNo, epicNo);
-            reference.child(name).setValue(user).addOnCompleteListener(task -> Toast.makeText(getApplicationContext(), "Add user successfully", Toast.LENGTH_LONG).show());
-            resetPage();
+    private void getStateIdByName(String stateName){
+        RetrofitService retrofitService = new RetrofitService();
+        StatesApi statesApi = retrofitService.getRetrofit().create(StatesApi.class);
+        Call<Integer> call = statesApi.getStateIdByName(stateName);
 
-        }else{
-            Toast.makeText(getApplicationContext(), "Push Failed!", Toast.LENGTH_SHORT).show();
-        }
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                Integer state_id = response.body();
+                if(state_id != null) {
+                    stateId = state_id;
+                }
+                Toast.makeText(MainActivity.this, "state id fetch success...", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "state id fetch failed...", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void resetPage() {
@@ -146,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         editPhone.setText("");
         editWard.setText("");
         editEpic.setText("");
+        editAadhaar.setText("");
         autoCompleteStateView.setText("");
         autoCompleteStateView.clearFocus();
         autoCompleteDistrictView.setText("");
@@ -158,4 +184,6 @@ public class MainActivity extends AppCompatActivity {
         materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
         materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> editDob.setText(materialDatePicker.getHeaderText()));
     }
+
+
 }
