@@ -19,6 +19,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.mobile.voterlist.api.DistrictApi;
+import edu.mobile.voterlist.model.District;
 import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.model.States;
 import edu.mobile.voterlist.api.PersonApi;
@@ -66,8 +68,58 @@ public class MainActivity extends AppCompatActivity {
         saveBtn = findViewById(R.id.pushBtn);
 
         loadStates();
+
+        autoCompleteStateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<String> emptyList = new ArrayList<>();
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, emptyList);
+                autoCompleteDistrictView.setAdapter(adapter);
+            }
+        });
+        autoCompleteDistrictView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!autoCompleteStateView.getText().toString().trim().isEmpty()){
+                    RetrofitService retrofitService = new RetrofitService();
+                    DistrictApi districtApi = retrofitService.getRetrofit().create(DistrictApi.class);
+
+                    getStateIdByName(autoCompleteStateView.getText().toString().trim());
+                    districtApi.getDistrictByStateId(stateId)
+                            .enqueue(new Callback<List<District>>() {
+                                @Override
+                                public void onResponse(@NonNull Call<List<District>> call, @NonNull Response<List<District>> response) {
+                                    List<District> resDistrict = response.body();
+                                    List<String> districtList = new ArrayList<>();
+                                    assert resDistrict != null;
+                                    for(District item : resDistrict){
+                                        districtList.add(item.getDistrict());
+                                    }
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
+                                    autoCompleteDistrictView.setAdapter(adapter);
+                                }
+
+                                @Override
+                                public void onFailure(@NonNull Call<List<District>> call, @NonNull Throwable t) {
+                                    Toast.makeText(getApplicationContext(), "District fetch failed...", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                else Toast.makeText(MainActivity.this, "State is Empty", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    public void onRadioButtonClicked(View view) {
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        genderBtn = findViewById(selectedId);
+        getGender = genderBtn.getText().toString();
+        Toast.makeText(getApplicationContext(), getGender, Toast.LENGTH_SHORT).show();
+    }
+    public void onDatePicker(View view) {
+        materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
+        materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> editDob.setText(materialDatePicker.getHeaderText()));
+    }
     private void loadStates() {
         RetrofitService retrofitService = new RetrofitService();
         StatesApi statesApi= retrofitService.getRetrofit().create(StatesApi.class);
@@ -92,19 +144,28 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
-    // RadioButton -> Gender
-    public void onRadioButtonClicked(View view) {
-        int selectedId = radioGroup.getCheckedRadioButtonId();
-        genderBtn = findViewById(selectedId);
-        getGender = genderBtn.getText().toString();
-        Toast.makeText(getApplicationContext(), getGender, Toast.LENGTH_SHORT).show();
+    public void onPushClick(View view) {
+        savePerson(stateId);
     }
 
-   public void onPushClick(View view) {
-       state = autoCompleteStateView.getText().toString();
-       getStateIdByName(state);
-   }
+    private void getStateIdByName(String stateName){
+        RetrofitService retrofitService = new RetrofitService();
+        StatesApi statesApi = retrofitService.getRetrofit().create(StatesApi.class);
+        Call<Integer> id = statesApi.getStateIdByName(stateName);
+        id.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
+                if(response.isSuccessful()){
+                    Integer id = response.body();
+                    postStateId(id);
+                }
+            }
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "State id fetch failed...", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void savePerson(int sId) {
         RetrofitService retrofitService = new RetrofitService();
@@ -143,27 +204,8 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void getStateIdByName(String stateName){
-        RetrofitService retrofitService = new RetrofitService();
-        StatesApi statesApi = retrofitService.getRetrofit().create(StatesApi.class);
-        Call<Integer> id = statesApi.getStateIdByName(stateName);
-        id.enqueue(new Callback<Integer>() {
-            @Override
-            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
-                if(response.isSuccessful()){
-                    Integer id = response.body();
-                    postStateId(id);
-                }
-            }
-            @Override
-            public void onFailure(Call<Integer> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "State id fetch failed...", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     public void postStateId(int id){
-        savePerson(id);
+        stateId = id;
     }
 
     private void resetPage() {
@@ -181,11 +223,6 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteDistrictView.clearFocus();
         autoCompleteAssemblyView.setText("");
         autoCompleteAssemblyView.clearFocus();
-    }
-
-    public void onDatePicker(View view) {
-        materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
-        materialDatePicker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<? super Object>) selection -> editDob.setText(materialDatePicker.getHeaderText()));
     }
 
 

@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Admin vote</string>
+    <string name="app_developTitleName">Developed By Hariharan</string>
     <string name="label_name">Name</string>
     <string name="label_lastName">Last Name</string>
     <string name="label_dob">Date of Birth</string>
