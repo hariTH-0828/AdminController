@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
     String name, fatherName, phoneNo, state, district, age, aadhaar_number, dateOfBirth, getGender;
-    private Integer stateId = 0;
-    EditText editName, editFatherName, editPhone, editWard, editEpic, editDob, editAadhaar;
+    int stateId;
+    EditText editName, editFatherName, editPhone, editWard, editEpic, editDob, editAadhaar, editAge;
     TextInputLayout datePicker;
     Button saveBtn;
     RadioGroup radioGroup;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         editAadhaar = findViewById(R.id.editAadhaar);
         radioGroup = findViewById(R.id.groupRadio);
         editDob = findViewById(R.id.editDateOfBirth);
+        editAge = findViewById(R.id.editAge);
         autoCompleteStateView = findViewById(R.id.editState);
         autoCompleteDistrictView = findViewById(R.id.editDistrict);
         autoCompleteAssemblyView = findViewById(R.id.editAssembly);
@@ -106,36 +107,37 @@ public class MainActivity extends AppCompatActivity {
    }
 
     private void savePerson(int sId) {
-        Person person = new Person();
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
         name = editName.getText().toString().trim();
         fatherName = editFatherName.getText().toString().trim();
         phoneNo = editPhone.getText().toString();
-        age = editWard.getText().toString();
+        age = editAge.getText().toString();
         aadhaar_number = editAadhaar.getText().toString();
-        state = autoCompleteStateView.getText().toString();
+        stateId = sId;
+
+
+        // Creating Person Object
+        Person person = new Person();
 
         person.setName(name);
         person.setFatherName(fatherName);
         person.setAge(Integer.parseInt(age));
         person.setPhoneNumber(phoneNo);
         person.setAadhaarNumber(aadhaar_number);
-        person.setStateId(sId);
+        person.setStateId(stateId);
         person.setGender(getGender);
-
-        Toast.makeText(getApplicationContext(), "state id from save person : "+sId, Toast.LENGTH_SHORT).show();
 
         personApi.save(person)
                 .enqueue(new Callback<Person>() {
                     @Override
-                    public void onResponse(Call<Person> call, Response<Person> response) {
+                    public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
                         Toast.makeText(MainActivity.this, "save person successful...", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onFailure(Call<Person> call, Throwable t) {
+                    public void onFailure(@NonNull Call<Person> call, @NonNull Throwable t) {
                         Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -149,8 +151,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
                 if(response.isSuccessful()){
-                    stateId = response.body();
-                    postStateId(stateId);
+                    Integer id = response.body();
+                    postStateId(id);
                 }
             }
             @Override
@@ -167,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
     private void resetPage() {
         editName.setText("");
         editDob.setText("");
+        editAge.setText("");
         editFatherName.setText("");
         editPhone.setText("");
         editWard.setText("");
