@@ -16,7 +16,6 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
     String name, fatherName, phoneNo, state, district, age, aadhaar_number, dateOfBirth, getGender;
-    int stateId;
+    private Integer stateId = 0;
     EditText editName, editFatherName, editPhone, editWard, editEpic, editDob, editAadhaar;
     TextInputLayout datePicker;
     Button saveBtn;
@@ -102,10 +101,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
    public void onPushClick(View view) {
-       savePerson();
+       state = autoCompleteStateView.getText().toString();
+       getStateIdByName(state);
    }
 
-    private void savePerson() {
+    private void savePerson(int sId) {
         Person person = new Person();
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
@@ -117,16 +117,15 @@ public class MainActivity extends AppCompatActivity {
         aadhaar_number = editAadhaar.getText().toString();
         state = autoCompleteStateView.getText().toString();
 
-        getStateIdByName(state);
-        Toast.makeText(MainActivity.this, stateId, Toast.LENGTH_SHORT).show();
-
         person.setName(name);
         person.setFatherName(fatherName);
         person.setAge(Integer.parseInt(age));
         person.setPhoneNumber(phoneNo);
         person.setAadhaarNumber(aadhaar_number);
-        person.setStateId(stateId);
+        person.setStateId(sId);
         person.setGender(getGender);
+
+        Toast.makeText(getApplicationContext(), "state id from save person : "+sId, Toast.LENGTH_SHORT).show();
 
         personApi.save(person)
                 .enqueue(new Callback<Person>() {
@@ -145,23 +144,24 @@ public class MainActivity extends AppCompatActivity {
     private void getStateIdByName(String stateName){
         RetrofitService retrofitService = new RetrofitService();
         StatesApi statesApi = retrofitService.getRetrofit().create(StatesApi.class);
-        Call<Integer> call = statesApi.getStateIdByName(stateName);
-
-        call.enqueue(new Callback<Integer>() {
+        Call<Integer> id = statesApi.getStateIdByName(stateName);
+        id.enqueue(new Callback<Integer>() {
             @Override
-            public void onResponse(Call<Integer> call, Response<Integer> response) {
-                Integer state_id = response.body();
-                if(state_id != null) {
-                    stateId = state_id;
+            public void onResponse(@NonNull Call<Integer> call, @NonNull Response<Integer> response) {
+                if(response.isSuccessful()){
+                    stateId = response.body();
+                    postStateId(stateId);
                 }
-                Toast.makeText(MainActivity.this, "state id fetch success...", Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onFailure(Call<Integer> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "state id fetch failed...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "State id fetch failed...", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void postStateId(int id){
+        savePerson(id);
     }
 
     private void resetPage() {
