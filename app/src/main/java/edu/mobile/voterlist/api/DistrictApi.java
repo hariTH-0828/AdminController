@@ -13,4 +13,7 @@ public interface DistrictApi {
     @GET("/api/district/state/{stateId}")
     Call<List<District>> getDistrictByStateId(@Path("stateId") int stateId);
 
+    @GET("/api/district/search/{districtName}")
+    Call<Integer> getDistrictIdByName(@Path("districtName") String districtName);
+
 }

@@ -24,4 +24,8 @@ public class District {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return district;
+	}
 }

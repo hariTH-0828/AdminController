@@ -15,5 +15,9 @@ public class States {
 	public int getId() {
 		return id;
 	}
-	
+
+	@Override
+	public String toString() {
+		return state;
+	}
 }
