@@ -12,6 +12,6 @@ public interface PersonApi {
     @POST("/api/person/setPerson")
     Call<Person> save(@Body Person person);
 
-    @GET("/api/person/aadhaar/{aadhaar_number}")
-    Call<Boolean> isExist(@Path("aadhaar_number") String aadhaarNumber);
+    @GET("/api/person/phone/{phone_number}")
+    Call<Boolean> isExist(@Path("phone_number") String phoneNumber);
 }

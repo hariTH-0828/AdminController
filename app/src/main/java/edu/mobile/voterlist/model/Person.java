@@ -10,10 +10,11 @@ public class Person {
     private String dateOfBirth;
     private int stateId;
     private int districtId;
+    private String epicNumber;
+    private int assemblyId;
     private String gender;
     private String phoneNumber;
     private String aadhaarNumber;
-    private String stateName;
 
     // Getter and Setter
     public String getName() {
@@ -64,14 +65,6 @@ public class Person {
         this.gender = gender;
     }
 
-    public String getStateName() {
-        return stateName;
-    }
-
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
-    }
-
     public int getStateId() {
         return stateId;
     }
@@ -94,6 +87,22 @@ public class Person {
 
     public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public int getAssemblyId() {
+        return assemblyId;
+    }
+
+    public void setAssemblyId(int assemblyId) {
+        this.assemblyId = assemblyId;
+    }
+
+    public String getEpicNumber() {
+        return epicNumber;
+    }
+
+    public void setEpicNumber(String epicNumber) {
+        this.epicNumber = epicNumber;
     }
 
     public int getId() {

@@ -22,7 +22,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
 
+import edu.mobile.voterlist.api.AssemblyApi;
 import edu.mobile.voterlist.api.DistrictApi;
+import edu.mobile.voterlist.model.Assembly;
 import edu.mobile.voterlist.model.District;
 import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.model.States;
@@ -37,9 +39,9 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
-    String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age;
-    int stateId, districtId;
-    EditText editName, editFatherName, editPhone, editWard, editEpic, editDob, editAadhaar, editAge;
+    String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber;
+    int stateId, districtId, assemblyId;
+    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
     RadioButton genderBtn;
@@ -55,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
         editPhone = findViewById(R.id.editPhone);
-        editWard = findViewById(R.id.editWard);
         editEpic = findViewById(R.id.editEpic);
         editAadhaar = findViewById(R.id.editAadhaar);
         radioGroup = findViewById(R.id.groupRadio);
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 States sId = (States) parent.getItemAtPosition(position);
                 stateId = sId.getId();
-                loadDistrict(sId.getId());
+                loadDistrict(stateId);
             }
         });
 
@@ -84,6 +85,15 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 District dId = (District) adapterView.getItemAtPosition(i);
                 districtId = dId.getId();
+                loadAssembly(districtId);
+            }
+        });
+
+        autoCompleteAssemblyView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Assembly aId = (Assembly) adapterView.getItemAtPosition(i);
+                assemblyId = aId.getId();
             }
         });
     }
@@ -142,12 +152,31 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void loadAssembly(int districtId){
+        RetrofitService retrofitService = new RetrofitService();
+        AssemblyApi assemblyApi = retrofitService.getRetrofit().create(AssemblyApi.class);
+
+        assemblyApi.getIdByName(districtId)
+                .enqueue(new Callback<List<Assembly>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Assembly>> call,@NonNull Response<List<Assembly>> response) {
+                        List<Assembly> assemblyList = response.body();
+                        ArrayAdapter<Assembly> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
+                        autoCompleteAssemblyView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<Assembly>> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), "Assembly fetch failed....", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
     private void savePerson() {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
-
-        personApi.isExist(aadhaar_number)
+        personApi.isExist(phoneNo)
                 .enqueue(new Callback<Boolean>() {
                     @Override
                     public void onResponse(@NonNull Call<Boolean> call,@NonNull Response<Boolean> response) {
@@ -164,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
                             person.setAadhaarNumber(aadhaar_number);
                             person.setStateId(stateId);
                             person.setDistrictId(districtId);
+                            person.setAssemblyId(assemblyId);
+                            person.setEpicNumber(epicNumber);
 
                             personApi.save(person)
                                     .enqueue(new Callback<Person>() {
@@ -182,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<Boolean> call, Throwable t) {
+                    public void onFailure(@NonNull Call<Boolean> call,@NonNull Throwable t) {
                         Toast.makeText(MainActivity.this, "Aadhaar fetch failed....", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -193,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
         editAge.setText("");
         editFatherName.setText("");
         editPhone.setText("");
-        editWard.setText("");
         editEpic.setText("");
         editAadhaar.setText("");
         autoCompleteStateView.setText("");
@@ -212,9 +242,10 @@ public class MainActivity extends AppCompatActivity {
         phoneNo = editPhone.getText().toString();
         age = editAge.getText().toString();
         aadhaar_number = editAadhaar.getText().toString();
+        epicNumber = editEpic.getText().toString();
 
         if(!name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
-                && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0){
+                && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()){
             savePerson();
         } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
     }
