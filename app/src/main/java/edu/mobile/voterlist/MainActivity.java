@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,6 +32,7 @@ import edu.mobile.voterlist.model.States;
 import edu.mobile.voterlist.api.PersonApi;
 import edu.mobile.voterlist.retrofit.RetrofitService;
 import edu.mobile.voterlist.api.StatesApi;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,6 +40,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Declarations
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
     String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber;
     int stateId, districtId, assemblyId;
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Assigning value to variable.
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
         editPhone = findViewById(R.id.editPhone);
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteDistrictView = findViewById(R.id.editDistrict);
         autoCompleteAssemblyView = findViewById(R.id.editAssembly);
         datePicker = findViewById(R.id.textLayoutDate);
-
+        // Date picker Icon
         datePicker.setEndIconOnClickListener(this::onDatePicker);
 
         loadStates();
@@ -167,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<List<Assembly>> call, Throwable t) {
+                    public void onFailure(@NonNull Call<List<Assembly>> call,@NonNull Throwable t) {
                         Toast.makeText(getApplicationContext(), "Assembly fetch failed....", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -176,50 +180,41 @@ public class MainActivity extends AppCompatActivity {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
-        personApi.isExist(phoneNo)
-                .enqueue(new Callback<Boolean>() {
+        Person person = new Person();
+
+        person.setName(name);
+        person.setGender(getGender);
+        person.setDateOfBirth(dateOfBirth);
+        person.setAge(Integer.parseInt(age));
+        person.setFatherName(fatherName);
+        person.setPhoneNumber(phoneNo);
+        person.setAadhaarNumber(aadhaar_number);
+        person.setStateId(stateId);
+        person.setDistrictId(districtId);
+        person.setAssemblyId(assemblyId);
+        person.setEpicNumber(epicNumber);
+
+        personApi.save(person)
+                .enqueue(new Callback<Person>() {
                     @Override
-                    public void onResponse(@NonNull Call<Boolean> call,@NonNull Response<Boolean> response) {
-                        boolean flag = Boolean.TRUE.equals(response.body());
-                        if(!flag) {
-                            Person person = new Person();
-
-                            person.setName(name);
-                            person.setGender(getGender);
-                            person.setDateOfBirth(dateOfBirth);
-                            person.setAge(Integer.parseInt(age));
-                            person.setFatherName(fatherName);
-                            person.setPhoneNumber(phoneNo);
-                            person.setAadhaarNumber(aadhaar_number);
-                            person.setStateId(stateId);
-                            person.setDistrictId(districtId);
-                            person.setAssemblyId(assemblyId);
-                            person.setEpicNumber(epicNumber);
-
-                            personApi.save(person)
-                                    .enqueue(new Callback<Person>() {
-                                        @Override
-                                        public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
-                                            Toast.makeText(MainActivity.this, "save person successful...", Toast.LENGTH_SHORT).show();
-                                        }
-                                        @Override
-                                        public void onFailure(@NonNull Call<Person> call, @NonNull Throwable t) {
-                                            Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        } else {
-                            Toast.makeText(MainActivity.this, "You've registered already.", Toast.LENGTH_SHORT).show();
+                    public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
+                        Person personBody = response.body();
+                        if(personBody == null){
+                            Toast.makeText(MainActivity.this, "This phone or aadhaar number is already exist, create person failed", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(MainActivity.this, personBody.getName()+", successfully created", Toast.LENGTH_SHORT).show();
+                            resetPage();
                         }
                     }
-
                     @Override
-                    public void onFailure(@NonNull Call<Boolean> call,@NonNull Throwable t) {
-                        Toast.makeText(MainActivity.this, "Aadhaar fetch failed....", Toast.LENGTH_SHORT).show();
+                    public void onFailure(@NonNull Call<Person> call, @NonNull Throwable t) {
+                        Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
     private void resetPage() {
         editName.setText("");
+        radioGroup.clearCheck();
         editDob.setText("");
         editAge.setText("");
         editFatherName.setText("");
@@ -232,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteDistrictView.clearFocus();
         autoCompleteAssemblyView.setText("");
         autoCompleteAssemblyView.clearFocus();
+        editEpic.clearFocus();
     }
 
 
@@ -245,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
         epicNumber = editEpic.getText().toString();
 
         if(!name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
-                && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()){
+                && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
             savePerson();
         } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
     }
