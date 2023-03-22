@@ -21,4 +21,9 @@
     <style name="Theme_loadingScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="background">@android:color/darker_gray</item>
     </style>
+
+    <style name="Button.yellow" parent="ThemeOverlay.AppCompat">
+        <item name="color">@color/yellow</item>
+        <item name="android:drawable">@drawable/rounded_corner</item>
+    </style>
 </resources>

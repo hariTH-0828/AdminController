@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
                         Person personBody = response.body();
                         if(personBody == null){
-                            Toast.makeText(MainActivity.this, "This phone or aadhaar number is already exist, create person failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
                         }else {
                             Toast.makeText(MainActivity.this, personBody.getName()+", successfully created", Toast.LENGTH_SHORT).show();
                             resetPage();
