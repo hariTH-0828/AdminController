@@ -1,16 +1,32 @@
 package edu.mobile.voterlist;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -18,6 +34,9 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -47,9 +66,13 @@ public class MainActivity extends AppCompatActivity {
     EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
+    Button browse;
+    ImageView imageView;
     RadioButton genderBtn;
     MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
     MaterialDatePicker<Long> materialDatePicker = builder.build();
+    private static final int READ_REQUEST_CODE = 1;
+    private ActivityResultLauncher<String> mGetContent;
 
 
     @Override
@@ -69,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
         autoCompleteStateView = findViewById(R.id.editState);
         autoCompleteDistrictView = findViewById(R.id.editDistrict);
         autoCompleteAssemblyView = findViewById(R.id.editAssembly);
+        browse = findViewById(R.id.browse_btn);
         datePicker = findViewById(R.id.textLayoutDate);
+        imageView = findViewById(R.id.user_image);
         // Date picker Icon
         datePicker.setEndIconOnClickListener(this::onDatePicker);
 
@@ -98,6 +123,27 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Assembly aId = (Assembly) adapterView.getItemAtPosition(i);
                 assemblyId = aId.getId();
+            }
+        });
+
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri result) {
+                        if (result != null) {
+                            try {
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result);
+                                imageView.setImageBitmap(bitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+        browse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
             }
         });
     }
@@ -244,5 +290,9 @@ public class MainActivity extends AppCompatActivity {
                 && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
             savePerson();
         } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
+    }
+
+    public void openGallery() {
+        mGetContent.launch("image/*");
     }
 }
