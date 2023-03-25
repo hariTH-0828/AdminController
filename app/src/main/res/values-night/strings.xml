@@ -2,4 +2,5 @@
 <resources>
     <string name="browseImg">Browse</string>
     <string name="desc_user_photo">user-photo</string>
+    <string name="create_voter">create voter</string>
 </resources>

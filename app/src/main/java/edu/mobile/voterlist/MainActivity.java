@@ -1,22 +1,12 @@
 package edu.mobile.voterlist;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,7 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -43,15 +33,19 @@ import java.util.List;
 import java.util.TimeZone;
 
 import edu.mobile.voterlist.api.AssemblyApi;
+import edu.mobile.voterlist.api.DataFileApi;
 import edu.mobile.voterlist.api.DistrictApi;
 import edu.mobile.voterlist.model.Assembly;
+import edu.mobile.voterlist.model.DataFileInfo;
 import edu.mobile.voterlist.model.District;
 import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.model.States;
 import edu.mobile.voterlist.api.PersonApi;
 import edu.mobile.voterlist.retrofit.RetrofitService;
 import edu.mobile.voterlist.api.StatesApi;
-import okhttp3.ResponseBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,12 +61,16 @@ public class MainActivity extends AppCompatActivity {
     TextInputLayout datePicker;
     RadioGroup radioGroup;
     Button browse;
+    InputStream imageData;
+    Uri uri;
     ImageView imageView;
     RadioButton genderBtn;
     MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
     MaterialDatePicker<Long> materialDatePicker = builder.build();
     private static final int READ_REQUEST_CODE = 1;
+    private final static String UPLOAD_FOLDER = "D:\\";
     private ActivityResultLauncher<String> mGetContent;
+    private long profileImageFileId;
 
 
     @Override
@@ -98,7 +96,26 @@ public class MainActivity extends AppCompatActivity {
         // Date picker Icon
         datePicker.setEndIconOnClickListener(this::onDatePicker);
 
-        loadStates();
+        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                            InputStream inputStream = getContentResolver().openInputStream(uri);
+                            imageView.setImageBitmap(bitmap);
+                            profileImageFileId = saveImage(uri);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        autoCompleteStateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadStates();
+            }
+        });
 
         autoCompleteStateView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -126,20 +143,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                new ActivityResultCallback<Uri>() {
-                    @Override
-                    public void onActivityResult(Uri result) {
-                        if (result != null) {
-                            try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), result);
-                                imageView.setImageBitmap(bitmap);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
         browse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -222,42 +225,40 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void savePerson() {
+    private Person savePerson(Person person) throws IOException {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
-        Person person = new Person();
-
-        person.setName(name);
-        person.setGender(getGender);
-        person.setDateOfBirth(dateOfBirth);
-        person.setAge(Integer.parseInt(age));
-        person.setFatherName(fatherName);
-        person.setPhoneNumber(phoneNo);
-        person.setAadhaarNumber(aadhaar_number);
-        person.setStateId(stateId);
-        person.setDistrictId(districtId);
-        person.setAssemblyId(assemblyId);
-        person.setEpicNumber(epicNumber);
-
-        personApi.save(person)
-                .enqueue(new Callback<Person>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
-                        Person personBody = response.body();
-                        if(personBody == null){
-                            Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(MainActivity.this, personBody.getName()+", successfully created", Toast.LENGTH_SHORT).show();
-                            resetPage();
-                        }
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<Person> call, @NonNull Throwable t) {
-                        Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        Response<Person> personResponse = personApi.save(person).execute();
+        if(personResponse.isSuccessful()) {
+            Person personBody = personResponse.body();
+            if(personBody == null){
+                Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(MainActivity.this, personBody.getName()+", successfully created", Toast.LENGTH_SHORT).show();
+                resetPage();
+            }
+        } else {
+            Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
+        }
+        return personResponse.body();
     }
+
+    private long saveImage(Uri uri) throws IOException {
+        RetrofitService retrofitService = new RetrofitService();
+        DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
+
+        File file = new File(uri.getPath());
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        RequestBody requestBody = new InputStreamRequestBody(MediaType.parse(getContentResolver().getType(this.uri)), inputStream);
+        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        Response<DataFileInfo> fileInfoResponse = dataFileApi.save(imagePart).execute();
+        if(fileInfoResponse.isSuccessful()) {
+            return fileInfoResponse.body().getId();
+        }
+        return 0;
+    }
+
     private void resetPage() {
         editName.setText("");
         radioGroup.clearCheck();
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void validateForm(View view) {
+    public void validateForm(View view) throws IOException {
         name = editName.getText().toString().trim();
         dateOfBirth = editDob.getText().toString();
         fatherName = editFatherName.getText().toString().trim();
@@ -286,13 +287,33 @@ public class MainActivity extends AppCompatActivity {
         aadhaar_number = editAadhaar.getText().toString();
         epicNumber = editEpic.getText().toString();
 
+        Person person = new Person();
+
+        person.setName(name);
+        person.setGender(getGender);
+        person.setDateOfBirth(dateOfBirth);
+        person.setAge(Integer.parseInt(age));
+        person.setFatherName(fatherName);
+        person.setPhoneNumber(phoneNo);
+        person.setAadhaarNumber(aadhaar_number);
+        person.setStateId(stateId);
+        person.setDistrictId(districtId);
+        person.setAssemblyId(assemblyId);
+        person.setEpicNumber(epicNumber);
+
         if(!name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
                 && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
-            savePerson();
+            Person savePerson = savePerson(person);
+            if(profileImageFileId > 0) {
+                RetrofitService retrofitService = new RetrofitService();
+                PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
+                personApi.associateProfilePhoto(savePerson.getId(), profileImageFileId);
+            }
         } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
     }
 
     public void openGallery() {
         mGetContent.launch("image/*");
     }
+
 }

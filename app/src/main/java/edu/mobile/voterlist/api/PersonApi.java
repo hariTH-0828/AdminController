@@ -14,4 +14,7 @@ public interface PersonApi {
 
     @GET("/api/person/phone/{phone_number}")
     Call<Boolean> isExist(@Path("phone_number") String phoneNumber);
+
+    @POST("/api/person/{id}/updateProfilePhoto")
+    Call<Boolean> associateProfilePhoto(@Path("id") long personId, long profilePhotoFileId);
 }

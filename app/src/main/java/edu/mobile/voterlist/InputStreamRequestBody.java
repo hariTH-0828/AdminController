@@ -1,0 +1,45 @@
+package edu.mobile.voterlist;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.internal.Util;
+import okio.BufferedSink;
+import okio.Okio;
+import okio.Source;
+
+public class InputStreamRequestBody extends RequestBody {
+    private MediaType mediaType;
+    private InputStream inputStream;
+
+    public InputStreamRequestBody() {}
+
+    public InputStreamRequestBody(MediaType mediaType, InputStream inputStream) {
+        super();
+        this.mediaType = mediaType;
+        this.inputStream = inputStream;
+    }
+
+    @Override
+    public MediaType contentType() {
+        return mediaType;
+    }
+
+    @Override
+    public long contentLength() throws IOException {
+        return inputStream.available();
+    }
+
+    @Override
+    public void writeTo(BufferedSink sink) throws IOException {
+        Source source = null;
+        try {
+            source = Okio.source(inputStream);
+            sink.writeAll(source);
+        } finally {
+            Util.closeQuietly(source);
+        }
+    }
+}
