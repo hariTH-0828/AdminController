@@ -4,6 +4,8 @@ import java.sql.Date;
 
 public class Person {
     private int id;
+
+    private long imageId;
     private String name;
     private String fatherName;
     private int age;
@@ -103,6 +105,13 @@ public class Person {
 
     public void setEpicNumber(String epicNumber) {
         this.epicNumber = epicNumber;
+    }
+
+    public long getImageId() {
+        return imageId;
+    }
+    public void setImageId(long imageId) {
+        this.imageId = imageId;
     }
 
     public int getId() {

@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -60,17 +61,14 @@ public class MainActivity extends AppCompatActivity {
     EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
-    Button browse;
-    InputStream imageData;
-    Uri uri;
+    Uri imageUri;
+    Bitmap imageBitmap;
+    Button browse, submitBtn;
     ImageView imageView;
     RadioButton genderBtn;
     MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
     MaterialDatePicker<Long> materialDatePicker = builder.build();
-    private static final int READ_REQUEST_CODE = 1;
-    private final static String UPLOAD_FOLDER = "D:\\";
     private ActivityResultLauncher<String> mGetContent;
-    private long profileImageFileId;
 
 
     @Override
@@ -93,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         browse = findViewById(R.id.browse_btn);
         datePicker = findViewById(R.id.textLayoutDate);
         imageView = findViewById(R.id.user_image);
+        submitBtn = findViewById(R.id.pushBtn);
         // Date picker Icon
         datePicker.setEndIconOnClickListener(this::onDatePicker);
 
@@ -101,9 +100,8 @@ public class MainActivity extends AppCompatActivity {
                     if (uri != null) {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            InputStream inputStream = getContentResolver().openInputStream(uri);
                             imageView.setImageBitmap(bitmap);
-                            profileImageFileId = saveImage(uri);
+                            sendUri(bitmap, uri);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -151,12 +149,21 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void sendUri(Bitmap bitmap, Uri uri) {
+        imageUri = uri;
+        imageBitmap = bitmap;
+    }
+
+    private void openGallery() {
+        mGetContent.launch("image/*");
+    }
     public void onRadioButtonClicked(View view) {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         genderBtn = findViewById(selectedId);
         getGender = genderBtn.getText().toString();
         Toast.makeText(getApplicationContext(), getGender, Toast.LENGTH_SHORT).show();
     }
+
     public void onDatePicker(View view) {
         materialDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
         materialDatePicker.addOnPositiveButtonClickListener(selection -> {
@@ -168,9 +175,10 @@ public class MainActivity extends AppCompatActivity {
             editDob.setText(formattedDate);
         });
     }
+
     private void loadStates() {
         RetrofitService retrofitService = new RetrofitService();
-        StatesApi statesApi= retrofitService.getRetrofit().create(StatesApi.class);
+        StatesApi statesApi = retrofitService.getRetrofit().create(StatesApi.class);
 
         statesApi.getAllStates()
                 .enqueue(new Callback<List<States>>() {
@@ -180,12 +188,14 @@ public class MainActivity extends AppCompatActivity {
                         ArrayAdapter<States> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, states);
                         autoCompleteStateView.setAdapter(adapter);
                     }
+
                     @Override
                     public void onFailure(@NonNull Call<List<States>> call, @NonNull Throwable t) {
                         Toast.makeText(MainActivity.this, "states load failed..", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
     private void loadDistrict(int stateId) {
         RetrofitService retrofitService = new RetrofitService();
         DistrictApi districtApi = retrofitService.getRetrofit().create(DistrictApi.class);
@@ -193,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         districtApi.getDistrictByStateId(stateId)
                 .enqueue(new Callback<List<District>>() {
                     @Override
-                    public void onResponse(@NonNull Call<List<District>> call,@NonNull Response<List<District>> response) {
+                    public void onResponse(@NonNull Call<List<District>> call, @NonNull Response<List<District>> response) {
                         List<District> districtList = response.body();
                         ArrayAdapter<District> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
                         autoCompleteDistrictView.setAdapter(adapter);
@@ -206,57 +216,84 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void loadAssembly(int districtId){
+    private void loadAssembly(int districtId) {
         RetrofitService retrofitService = new RetrofitService();
         AssemblyApi assemblyApi = retrofitService.getRetrofit().create(AssemblyApi.class);
 
         assemblyApi.getIdByName(districtId)
                 .enqueue(new Callback<List<Assembly>>() {
                     @Override
-                    public void onResponse(@NonNull Call<List<Assembly>> call,@NonNull Response<List<Assembly>> response) {
+                    public void onResponse(@NonNull Call<List<Assembly>> call, @NonNull Response<List<Assembly>> response) {
                         List<Assembly> assemblyList = response.body();
                         ArrayAdapter<Assembly> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
                         autoCompleteAssemblyView.setAdapter(adapter);
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<List<Assembly>> call,@NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<List<Assembly>> call, @NonNull Throwable t) {
                         Toast.makeText(getApplicationContext(), "Assembly fetch failed....", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-    private Person savePerson(Person person) throws IOException {
+
+    private void savePerson(long profileImageId) throws IOException {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
-        Response<Person> personResponse = personApi.save(person).execute();
-        if(personResponse.isSuccessful()) {
-            Person personBody = personResponse.body();
-            if(personBody == null){
-                Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(MainActivity.this, personBody.getName()+", successfully created", Toast.LENGTH_SHORT).show();
+        Person person = new Person();
+
+        person.setName(name);
+        person.setImageId(profileImageId);
+        person.setGender(getGender);
+        person.setDateOfBirth(dateOfBirth);
+        person.setAge(Integer.parseInt(age));
+        person.setFatherName(fatherName);
+        person.setPhoneNumber(phoneNo);
+        person.setAadhaarNumber(aadhaar_number);
+        person.setStateId(stateId);
+        person.setDistrictId(districtId);
+        person.setAssemblyId(assemblyId);
+        person.setEpicNumber(epicNumber);
+            personApi.save(person).enqueue(new Callback<Person>() {
+            @Override
+            public void onResponse(@NonNull Call<Person> call,@NonNull Response<Person> response) {
+                Toast.makeText(MainActivity.this, response.body().getName() + ", successfully created", Toast.LENGTH_SHORT).show();
                 resetPage();
             }
-        } else {
-            Toast.makeText(MainActivity.this, "save person failed...", Toast.LENGTH_SHORT).show();
-        }
-        return personResponse.body();
+            @Override
+            public void onFailure(Call<Person> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private long saveImage(Uri uri) throws IOException {
+    private void saveImage(Uri uri) throws IOException {
         RetrofitService retrofitService = new RetrofitService();
         DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
 
+        Log.d("URI", uri.getPath());
         File file = new File(uri.getPath());
         InputStream inputStream = getContentResolver().openInputStream(uri);
-        RequestBody requestBody = new InputStreamRequestBody(MediaType.parse(getContentResolver().getType(this.uri)), inputStream);
+        RequestBody requestBody = new InputStreamRequestBody(MediaType.parse(getContentResolver().getType(uri)), inputStream);
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        Response<DataFileInfo> fileInfoResponse = dataFileApi.save(imagePart).execute();
-        if(fileInfoResponse.isSuccessful()) {
-            return fileInfoResponse.body().getId();
-        }
-        return 0;
+
+        dataFileApi.save(imagePart).enqueue(new Callback<DataFileInfo>() {
+            @Override
+            public void onResponse(@NonNull Call<DataFileInfo> call,@NonNull Response<DataFileInfo> response) {
+                DataFileInfo dataFileInfo = response.body();
+                try {
+                    savePerson(dataFileInfo.getId());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Toast.makeText(getApplicationContext(), "Save Image success", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<DataFileInfo> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Save Image failed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void resetPage() {
@@ -286,34 +323,14 @@ public class MainActivity extends AppCompatActivity {
         age = editAge.getText().toString();
         aadhaar_number = editAadhaar.getText().toString();
         epicNumber = editEpic.getText().toString();
+        int isImage = imageBitmap.getByteCount();
 
-        Person person = new Person();
-
-        person.setName(name);
-        person.setGender(getGender);
-        person.setDateOfBirth(dateOfBirth);
-        person.setAge(Integer.parseInt(age));
-        person.setFatherName(fatherName);
-        person.setPhoneNumber(phoneNo);
-        person.setAadhaarNumber(aadhaar_number);
-        person.setStateId(stateId);
-        person.setDistrictId(districtId);
-        person.setAssemblyId(assemblyId);
-        person.setEpicNumber(epicNumber);
-
-        if(!name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
+        if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
                 && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
-            Person savePerson = savePerson(person);
-            if(profileImageFileId > 0) {
-                RetrofitService retrofitService = new RetrofitService();
-                PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
-                personApi.associateProfilePhoto(savePerson.getId(), profileImageFileId);
-            }
-        } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
-    }
 
-    public void openGallery() {
-        mGetContent.launch("image/*");
+            saveImage(imageUri);
+
+        } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
     }
 
 }
