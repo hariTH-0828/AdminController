@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -57,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     // Declarations
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
     String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber;
-    int stateId, districtId, assemblyId;
+    int stateId, districtId, assemblyId, personId;
+    long userProfileId;
     EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
@@ -108,13 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        autoCompleteStateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadStates();
-            }
-        });
-
+        loadStates();
         autoCompleteStateView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -236,14 +232,13 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void savePerson(long profileImageId) throws IOException {
+    private void savePerson() {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
         Person person = new Person();
 
         person.setName(name);
-        person.setImageId(profileImageId);
         person.setGender(getGender);
         person.setDateOfBirth(dateOfBirth);
         person.setAge(Integer.parseInt(age));
@@ -254,20 +249,27 @@ public class MainActivity extends AppCompatActivity {
         person.setDistrictId(districtId);
         person.setAssemblyId(assemblyId);
         person.setEpicNumber(epicNumber);
-            personApi.save(person).enqueue(new Callback<Person>() {
+
+        personApi.save(person).enqueue(new Callback<Person>() {
             @Override
-            public void onResponse(@NonNull Call<Person> call,@NonNull Response<Person> response) {
-                Toast.makeText(MainActivity.this, response.body().getName() + ", successfully created", Toast.LENGTH_SHORT).show();
-                resetPage();
+            public void onResponse(Call<Person> call, Response<Person> response) {
+                Toast.makeText(MainActivity.this, "profile added successful", Toast.LENGTH_SHORT).show();
+                personId = response.body().getId();
+                try {
+                    saveImage(imageUri, personId);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
+
             @Override
             public void onFailure(Call<Person> call, Throwable t) {
-                Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "profile added failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void saveImage(Uri uri) throws IOException {
+    private void saveImage(Uri uri, int pid) throws IOException {
         RetrofitService retrofitService = new RetrofitService();
         DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
 
@@ -281,17 +283,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<DataFileInfo> call,@NonNull Response<DataFileInfo> response) {
                 DataFileInfo dataFileInfo = response.body();
-                try {
-                    savePerson(dataFileInfo.getId());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                updateProfile(dataFileInfo.getId(), pid);
                 Toast.makeText(getApplicationContext(), "Save Image success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<DataFileInfo> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Save Image failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updateProfile(long profileId, int userId) {
+        Toast.makeText(getApplicationContext(), "updateProfile : "+profileId+" "+userId, Toast.LENGTH_SHORT).show();
+
+        RetrofitService retrofitService = new RetrofitService();
+        PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
+        personApi.associateProfilePhoto(userId, profileId).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.d("updateProfile", "Failed to update profile");
             }
         });
     }
@@ -328,7 +343,8 @@ public class MainActivity extends AppCompatActivity {
         if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
                 && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
 
-            saveImage(imageUri);
+//            saveImage(imageUri);
+            savePerson();
 
         } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
     }

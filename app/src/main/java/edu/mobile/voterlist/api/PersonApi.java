@@ -5,7 +5,9 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface PersonApi {
 
@@ -15,6 +17,6 @@ public interface PersonApi {
     @GET("/api/person/phone/{phone_number}")
     Call<Boolean> isExist(@Path("phone_number") String phoneNumber);
 
-    @POST("/api/person/{id}/updateProfilePhoto")
-    Call<Boolean> associateProfilePhoto(@Path("id") long personId, long profilePhotoFileId);
+    @PUT("/api/person/updateProfile/{id}")
+    Call<Boolean> associateProfilePhoto(@Path("id") int personId, @Query("imageId") long imageId);
 }
