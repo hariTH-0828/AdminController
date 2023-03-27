@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
     String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber;
     int stateId, districtId, assemblyId, personId;
-    long userProfileId;
     EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
@@ -153,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
     private void openGallery() {
         mGetContent.launch("image/*");
     }
+
     public void onRadioButtonClicked(View view) {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         genderBtn = findViewById(selectedId);
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<List<District>> call, Throwable t) {
+                    public void onFailure(@NonNull Call<List<District>> call,@NonNull Throwable t) {
                         Toast.makeText(getApplicationContext(), "District fetch failed..", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -252,18 +252,20 @@ public class MainActivity extends AppCompatActivity {
 
         personApi.save(person).enqueue(new Callback<Person>() {
             @Override
-            public void onResponse(Call<Person> call, Response<Person> response) {
-                Toast.makeText(MainActivity.this, "profile added successful", Toast.LENGTH_SHORT).show();
-                personId = response.body().getId();
-                try {
-                    saveImage(imageUri, personId);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            public void onResponse(@NonNull Call<Person> call,@NonNull Response<Person> response) {
+                Person personResponse = response.body();
+                if(personResponse != null){
+                    personId = personResponse.getId();
+                    try {
+                        saveImage(imageUri, personId);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }else Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
 
+            }
             @Override
-            public void onFailure(Call<Person> call, Throwable t) {
+            public void onFailure(@NonNull Call<Person> call,@NonNull Throwable t) {
                 Toast.makeText(MainActivity.this, "profile added failed", Toast.LENGTH_SHORT).show();
             }
         });
@@ -284,7 +286,6 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<DataFileInfo> call,@NonNull Response<DataFileInfo> response) {
                 DataFileInfo dataFileInfo = response.body();
                 updateProfile(dataFileInfo.getId(), pid);
-                Toast.makeText(getApplicationContext(), "Save Image success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -302,11 +303,12 @@ public class MainActivity extends AppCompatActivity {
         personApi.associateProfilePhoto(userId, profileId).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.d("updateProfile", "Failed to update profile");
+                Toast.makeText(getApplicationContext(), "Profile added failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -329,7 +331,6 @@ public class MainActivity extends AppCompatActivity {
         editEpic.clearFocus();
     }
 
-
     public void validateForm(View view) throws IOException {
         name = editName.getText().toString().trim();
         dateOfBirth = editDob.getText().toString();
@@ -343,7 +344,6 @@ public class MainActivity extends AppCompatActivity {
         if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
                 && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
 
-//            saveImage(imageUri);
             savePerson();
 
         } else Toast.makeText(getApplicationContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
