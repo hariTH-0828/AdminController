@@ -304,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
+                resetPage();
             }
 
             @Override
