@@ -3,6 +3,7 @@ package edu.mobile.voterlist;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -12,12 +13,14 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -64,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     Uri imageUri;
     Bitmap imageBitmap;
-    Button browse, submitBtn;
+    Button browse;
+    ImageButton submitBtn;
     ImageView imageView;
     RadioButton genderBtn;
     MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
@@ -76,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // setup the action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         // Assigning value to variable.
         editName = findViewById(R.id.editName);
@@ -142,6 +152,17 @@ public class MainActivity extends AppCompatActivity {
                 openGallery();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void sendUri(Bitmap bitmap, Uri uri) {
@@ -261,7 +282,10 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                }else Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
+                    submitBtn.setImageResource(R.drawable.failed_button);
+                }
 
             }
             @Override
@@ -304,6 +328,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
+                submitBtn.setImageResource(R.drawable.done_button);
+                resetPage();
             }
 
             @Override

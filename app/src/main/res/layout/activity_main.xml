@@ -4,25 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme_MainActivity"
     tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginStart="10dp"
-        android:fontFamily="@font/josefin_bold"
-        android:gravity="center"
-        android:text="@string/label_head"
-        android:textAllCaps="true"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.023"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.021" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -44,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
@@ -68,7 +51,7 @@
                     android:text="@string/browseImg"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/rounded_corner"
+                    android:background="@drawable/custom_browse_button"
                     android:textColor="@color/black"/>
             </LinearLayout>
 
@@ -77,13 +60,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -102,68 +86,77 @@
                     android:textSize="15sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/groupRadio"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginStart="10dp"
-                android:layout_weight="@integer/material_motion_duration_long_2"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
 
-                <RadioGroup
-                    android:id="@+id/groupRadio"
-                    android:layout_width="match_parent"
+                <RadioButton
+                    android:id="@+id/radio_male"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_male_selector"
+                    android:button="@android:color/transparent"
+                    android:drawableTop="@drawable/custom_male_icon_selector"
+                    android:drawablePadding="-20dp"
+                    android:fontFamily="@font/josefin_bold"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/radio_male"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/custom_radio_text" />
 
-                    <RadioButton
-                        android:id="@+id/radio_male"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="@integer/material_motion_duration_short_1"
-                        android:fontFamily="@font/josefin_bold"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/radio_male" />
+                <RadioButton
+                    android:id="@+id/radio_female"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/custom_female_selector"
+                    android:button="@android:color/transparent"
+                    android:drawableTop="@drawable/custom_female_icon_selector"
+                    android:drawablePadding="-20dp"
+                    android:fontFamily="@font/josefin_bold"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/radio_female"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/custom_radio_text" />
 
-                    <RadioButton
-                        android:id="@+id/radio_female"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="@integer/material_motion_duration_short_1"
-                        android:fontFamily="@font/josefin_bold"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/radio_female" />
-
-                    <RadioButton
-                        android:id="@+id/radio_trans_gender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="@integer/material_motion_duration_short_1"
-                        android:fontFamily="@font/josefin_bold"
-                        android:onClick="onRadioButtonClicked"
-                        android:text="@string/radio_trans_gender" />
-                </RadioGroup>
-            </LinearLayout>
+                <RadioButton
+                    android:id="@+id/radio_trans_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/custom_trans_selector"
+                    android:button="@android:color/transparent"
+                    android:drawableTop="@drawable/custom_trans_icon_selector"
+                    android:drawablePadding="-20dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/josefin_bold"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/radio_trans_gender"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/custom_radio_text" />
+            </RadioGroup>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:weightSum="2">
+                android:orientation="horizontal">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/textLayoutDate"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:clipChildren="true"
                     android:onClick="onDatePicker"
-                    android:weightSum="@integer/material_motion_duration_medium_1"
+                    android:weightSum="1"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -193,11 +186,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
+                    android:layout_margin="10dp"
                     android:layout_weight="1"
+                    app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                    app:endIconMode="custom"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
@@ -228,15 +222,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="30"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -260,13 +253,14 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
+                app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                app:endIconMode="custom"
                 app:counterEnabled="true"
                 app:counterMaxLength="10"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -302,6 +296,9 @@
                 app:boxCornerRadiusTopStart="16dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="12"
+                android:layout_margin="10dp"
+                app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -327,9 +324,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -347,6 +342,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
                     android:hint="@string/label_state"
                     android:textColorHint="#78909C" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -355,9 +351,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -375,6 +369,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
                     android:hint="@string/label_district" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -383,9 +378,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -403,6 +396,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
                     android:hint="@string/label_assembly" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -411,9 +405,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_margin="10dp"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="16dp"
                 app:boxCornerRadiusBottomStart="16dp"
@@ -421,6 +413,8 @@
                 app:boxCornerRadiusTopStart="16dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="10"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -440,17 +434,17 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/pushBtn"
-                android:layout_width="130dp"
+                android:layout_width="180dp"
+                android:contentDescription="@string/btn_push"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:background="@drawable/rounded_corner"
-                android:onClick="validateForm"
-                android:text="@string/btn_push" />
+                android:src="@drawable/submit_button"
+                android:background="@android:color/transparent"
+                android:onClick="validateForm" />
 
             <TextView
                 android:layout_width="wrap_content"

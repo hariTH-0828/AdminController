@@ -20,9 +20,11 @@
 
     <string name="radio_male">Male</string>
     <string name="radio_female">Female</string>
-    <string name="radio_trans_gender">Trans_Gender</string>
+    <string name="radio_trans_gender">Trans Gender</string>
     <string name="radio_nomention">No Mention</string>
     <string name="browseImg">Browse</string>
     <string name="desc_user_photo">user-photo</string>
     <string name="create_voter">create voter</string>
+    <string name="search_voter">search voter</string>
+    <string name="slogan">It’s in your hand to change the world</string>
 </resources>
