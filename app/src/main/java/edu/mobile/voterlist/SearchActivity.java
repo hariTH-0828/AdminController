@@ -56,8 +56,9 @@ public class SearchActivity extends AppCompatActivity {
         startActivity(switchView);
     }
 
-    public void onSearchClick(View view) {
-        RetrofitService retrofitService = new RetrofitService();
+    public void onAadhaarClick(View view) {
+    }
 
+    public void onEpicClick(View view) {
     }
 }
