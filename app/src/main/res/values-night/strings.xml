@@ -5,4 +5,5 @@
     <string name="create_voter">create voter</string>
     <string name="voter_details">Voter Details</string>
     <string name="sex">Sex</string>
+    <string name="back">Back</string>
 </resources>

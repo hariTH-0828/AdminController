@@ -8,13 +8,14 @@ import android.view.View;
 import android.widget.RadioButton;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import edu.mobile.voterlist.retrofit.RetrofitService;
 
 public class SearchActivity extends AppCompatActivity {
 
     RadioButton byEpic, byAadhaar;
-    TextInputEditText editText;
+    TextInputLayout layoutAadhaar, layoutEpic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,8 @@ public class SearchActivity extends AppCompatActivity {
 
         byEpic = findViewById(R.id.searchByEpic);
         byAadhaar = findViewById(R.id.searchByAadhaar);
-        editText = findViewById(R.id.editInputText);
+        layoutAadhaar = findViewById(R.id.layoutAadhaar);
+        layoutEpic = findViewById(R.id.layoutEpic);
     }
 
     public void onSearchByClick(View view) {
@@ -31,14 +33,22 @@ public class SearchActivity extends AppCompatActivity {
         byEpic.setOnClickListener(v -> {
             byEpic.setChecked(true);
             byAadhaar.setChecked(false);
+
+            layoutEpic.setVisibility(View.VISIBLE);
+            layoutAadhaar.setVisibility(View.INVISIBLE);
         });
 
         byAadhaar.setOnClickListener(v -> {
             byAadhaar.setChecked(true);
             byEpic.setChecked(false);
 
+            layoutEpic.setVisibility(View.INVISIBLE);
+            layoutAadhaar.setVisibility(View.VISIBLE);
+
         });
         byEpic.setChecked(false);
+        layoutEpic.setVisibility(View.INVISIBLE);
+        layoutAadhaar.setVisibility(View.VISIBLE);
     }
 
     public void onBackClicked(View view) {
