@@ -3,4 +3,6 @@
     <string name="browseImg">Browse</string>
     <string name="desc_user_photo">user-photo</string>
     <string name="create_voter">create voter</string>
+    <string name="voter_details">Voter Details</string>
+    <string name="sex">Sex</string>
 </resources>

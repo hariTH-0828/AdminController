@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
-                submitBtn.setImageResource(R.drawable.done_button);
+                /*submitBtn.setImageResource(R.drawable.done_button);*/
                 resetPage();
             }
 
@@ -348,6 +348,8 @@ public class MainActivity extends AppCompatActivity {
         editPhone.setText("");
         editEpic.setText("");
         editAadhaar.setText("");
+        imageView.setBackgroundResource(R.drawable.photo_frame);
+        imageView.setImageResource(R.drawable.ic_launcher_photo_foreground);
         autoCompleteStateView.setText("");
         autoCompleteStateView.clearFocus();
         autoCompleteDistrictView.setText("");

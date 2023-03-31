@@ -18,29 +18,28 @@
         android:theme="@style/Theme_activityMain"
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
-
-        <activity
-            android:name=".UpdateActivity"
-            android:exported="false" />
-
         <activity
             android:name=".SearchActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".UpdateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchResultActivity"
+            android:exported="false" />
         <activity
             android:name=".HomeScreen"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:theme="@style/Theme_MainActivity"/>
-
+            android:theme="@style/Theme_MainActivity" />
     </application>
 
 </manifest>

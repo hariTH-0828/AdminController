@@ -3,66 +3,144 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".SearchActivity">
 
-    <!--<RadioGroup
-        android:id="@+id/radioGroup"
+
+    <ImageView
+        android:id="@+id/searchBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:onClick="onBackClicked"
+        android:src="@drawable/ic_launcher_back_foreground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.046"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="@font/falling_sky_black"
+        android:text="@string/voter_search"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBack"
+        tools:ignore="MissingConstraints" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/voter_search_dialogue"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.074">
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
 
-        <RadioButton
-            android:id="@+id/radio_male"
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/custom_radio_selector"
-            android:button="@android:color/transparent"
-            android:drawableTop="@drawable/custom_male_radio_selector"
-            android:drawablePadding="-20dp"
-            android:fontFamily="@font/josefin_bold"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/radio_male"
-            android:textAlignment="center"
-            android:textColor="@drawable/custom_radio_text" />
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:src="@drawable/search_ill" />
 
-        <RadioButton
-            android:id="@+id/radio_female"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/custom_radio_selector"
-            android:button="@android:color/transparent"
-            android:drawableTop="@drawable/custom_female_radio_selector"
-            android:drawablePadding="-20dp"
-            android:fontFamily="@font/josefin_bold"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/radio_female"
-            android:textAlignment="center"
-            android:textColor="@drawable/custom_radio_text" />
+            android:layout_gravity="center"
+            android:background="@drawable/search_dialogue_linear_background"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/radio_trans_gender"
-            android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/searchByEpic"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/search_dialogue_textview_selector"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:fontFamily="@font/notosans_bold"
+                android:gravity="center"
+                android:onClick="onSearchByClick"
+                android:text="@string/label_epic"
+                android:textColor="@drawable/search_dialogue_textview_textcolor" />
+
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/searchByAadhaar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/search_dialogue_textview_selector"
+                android:button="@android:color/transparent"
+                android:fontFamily="@font/notosans_bold"
+                android:gravity="center"
+                android:onClick="onSearchByClick"
+                android:text="@string/label_aadhaar"
+                android:textColor="@drawable/search_dialogue_textview_textcolor" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutEpic"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/custom_radio_selector"
-            android:button="@android:color/transparent"
-            android:drawableTop="@drawable/custom_trans_radio_selector"
-            android:drawablePadding="-20dp"
-            android:fontFamily="@font/josefin_bold"
-            android:onClick="onRadioButtonClicked"
-            android:text="@string/radio_trans_gender"
-            android:textAlignment="center"
-            android:textColor="@drawable/custom_radio_text" />
+            android:layout_gravity="center"
+            android:orientation="vertical">
 
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusTopStart="10dp"
+                app:counterMaxLength="10"
+                app:counterOverflowTextAppearance="@style/counterOverFlowError"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274"
+                app:startIconDrawable="@drawable/ic_launcher_number_foreground"
+                tools:ignore="NestedWeights">
 
-    </RadioGroup>-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_epic"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/search_voter"
+                android:onClick="onSearchClick"
+                android:src="@drawable/search_button" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
