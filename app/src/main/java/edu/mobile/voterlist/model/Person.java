@@ -1,8 +1,7 @@
 package edu.mobile.voterlist.model;
 
-import java.sql.Date;
-
 public class Person {
+
     private int id;
 
     private DataFileInfo imageId;

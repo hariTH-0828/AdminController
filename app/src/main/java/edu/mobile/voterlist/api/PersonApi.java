@@ -17,6 +17,9 @@ public interface PersonApi {
     @GET("/api/person/phone/{phone_number}")
     Call<Boolean> isExist(@Path("phone_number") String phoneNumber);
 
+    @GET("/api/person/aadhaar/{aadhaar_number}")
+    Call<Person> getPersonByAadhaar(@Path("aadhaar_number") String aadhaarNumber);
+
     @PUT("/api/person/updateProfile/{id}")
     Call<Boolean> associateProfilePhoto(@Path("id") int personId, @Query("imageId") long imageId);
 }

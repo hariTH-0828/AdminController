@@ -1,21 +1,35 @@
 package edu.mobile.voterlist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+import edu.mobile.voterlist.api.AssemblyApi;
+import edu.mobile.voterlist.api.DistrictApi;
+import edu.mobile.voterlist.api.PersonApi;
+import edu.mobile.voterlist.api.StatesApi;
+import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.retrofit.RetrofitService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SearchActivity extends AppCompatActivity {
 
     RadioButton byEpic, byAadhaar;
     TextInputLayout layoutAadhaar, layoutEpic;
+    TextInputEditText aadhaar, epic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +40,9 @@ public class SearchActivity extends AppCompatActivity {
         byAadhaar = findViewById(R.id.searchByAadhaar);
         layoutAadhaar = findViewById(R.id.layoutAadhaar);
         layoutEpic = findViewById(R.id.layoutEpic);
+
+        aadhaar = findViewById(R.id.editInputAadhaar);
+        epic = findViewById(R.id.editInputEpic);
     }
 
     public void onSearchByClick(View view) {
@@ -57,8 +74,26 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void onAadhaarClick(View view) {
-    }
+        Intent switchView = new Intent(getApplicationContext(), SearchResultActivity.class);
+        String aadhaarNumber = aadhaar.getText().toString();
 
-    public void onEpicClick(View view) {
+        RetrofitService retrofitService = new RetrofitService();
+        PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
+        personApi.getPersonByAadhaar(aadhaarNumber).enqueue(new Callback<Person>() {
+            @Override
+            public void onResponse(@NonNull Call<Person> call,@NonNull Response<Person> response) {
+                ArrayList<String> personDetail = new ArrayList<>();
+                Person person = response.body();
+
+                personDetail.add(person.getName());
+
+                switchView.putStringArrayListExtra("PersonList", personDetail);
+                startActivity(switchView);
+            }
+            @Override
+            public void onFailure(Call<Person> call, Throwable t) {
+
+            }
+        });
     }
 }

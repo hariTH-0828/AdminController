@@ -13,4 +13,7 @@ public interface AssemblyApi {
     @GET("/api/assembly/district/{id}")
     Call<List<Assembly>> getIdByName(@Path("id") int id);
 
+    @GET("/api/assembly/{id}")
+    Call<String> getById(@Path("id") int id);
+
 }

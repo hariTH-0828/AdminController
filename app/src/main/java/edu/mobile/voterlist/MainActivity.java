@@ -178,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         int selectedId = radioGroup.getCheckedRadioButtonId();
         genderBtn = findViewById(selectedId);
         getGender = genderBtn.getText().toString();
-        Toast.makeText(getApplicationContext(), getGender, Toast.LENGTH_SHORT).show();
     }
 
     public void onDatePicker(View view) {
