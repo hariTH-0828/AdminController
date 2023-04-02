@@ -20,6 +20,9 @@ public interface PersonApi {
     @GET("/api/person/aadhaar/{aadhaar_number}")
     Call<Person> getPersonByAadhaar(@Path("aadhaar_number") String aadhaarNumber);
 
+    @GET("/api/person/epic/{epic_number}")
+    Call<Person> getPersonByEpic(@Path("epic_number") String epicNumber);
+
     @PUT("/api/person/updateProfile/{id}")
     Call<Boolean> associateProfilePhoto(@Path("id") int personId, @Query("imageId") long imageId);
 }

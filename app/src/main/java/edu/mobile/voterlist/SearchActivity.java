@@ -6,9 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -81,10 +79,49 @@ public class SearchActivity extends AppCompatActivity {
     public void onAadhaarClick(View view) throws IOException {
         Intent switchView = new Intent(getApplicationContext(), SearchResultActivity.class);
         String aadhaarNumber = aadhaar.getText().toString();
-        getPerson(aadhaarNumber, switchView);
+        getPersonByAadhaar(aadhaarNumber, switchView);
     }
 
-    public void getPerson(String aadhaarNumber, Intent intent) {
+    public void onEpicClick(View view) {
+        Intent switchView = new Intent(getApplicationContext(), SearchResultActivity.class);
+        String epicNumber = epic.getText().toString();
+        getPersonByEpic(epicNumber, switchView);
+    }
+
+    private void getPersonByEpic(String epicNumber, Intent intent) {
+        RetrofitService retrofitService = new RetrofitService();
+        PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
+
+        personApi.getPersonByEpic(epicNumber).enqueue(new Callback<Person>() {
+            @Override
+            public void onResponse(Call<Person> call, Response<Person> response) {
+                if(response.isSuccessful()) {
+                    Person person = response.body();
+                    personList.add(person.getName());
+                    personList.add(person.getFatherName());
+                    personList.add(person.getGender());
+                    personList.add(person.getDateOfBirth());
+                    personList.add(String.valueOf(person.getAge()));
+                    personList.add(person.getPhoneNumber());
+                    personList.add(person.getAadhaarNumber());
+                    personList.add(person.getEpicNumber());
+
+                    intent.putStringArrayListExtra("personList", personList);
+
+                    getStateName(person.getStateId(), intent);
+                    getDistrictName(person.getDistrictId(), intent);
+                    getAssemblyName(person.getAssemblyId(), intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Person> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getPersonByAadhaar(String aadhaarNumber, Intent intent) {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
 
@@ -123,7 +160,6 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(Call<States> call, Response<States> response) {
                 States states = response.body();
                 intent.putExtra("stateName", states.getState());
-
             }
             @Override
             public void onFailure(Call<States> call, Throwable t) {

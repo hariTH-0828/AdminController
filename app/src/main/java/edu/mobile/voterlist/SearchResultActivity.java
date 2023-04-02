@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class SearchResultActivity extends AppCompatActivity {
 
     TextView name, fatherName, sex, date_of_birth, age, phoneNo, aadhaarNo, state, district, assembly, epicNo;
-    Button doneButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +31,8 @@ public class SearchResultActivity extends AppCompatActivity {
         district = findViewById(R.id.voterDistrict);
         assembly = findViewById(R.id.voterAssembly);
         epicNo = findViewById(R.id.VoterEpicNumber);
-        doneButton = findViewById(R.id.done_button);
 
         displayResult();
-
-
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), HomeScreen.class));
-            }
-        });
     }
 
     private void displayResult() {
@@ -72,5 +62,10 @@ public class SearchResultActivity extends AppCompatActivity {
         phoneNo.setText(personList.get(5));
         aadhaarNo.setText(personList.get(6));
         epicNo.setText(personList.get(7));
+    }
+
+    public void onDone(View view) {
+        Intent switchView = new Intent(getApplicationContext(), HomeScreen.class);
+        startActivity(switchView);
     }
 }
