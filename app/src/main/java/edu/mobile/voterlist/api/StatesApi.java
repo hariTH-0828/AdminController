@@ -17,5 +17,5 @@ public interface StatesApi {
     Call<Integer> getStateIdByName(@Path("stateName") String stateName);
 
     @GET("/api/states/{id}")
-    Call<Response<String>> getStatesById(@Path("id") int id);
+    Call<States> getStatesById(@Path("id") int id);
 }

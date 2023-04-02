@@ -14,6 +14,6 @@ public interface AssemblyApi {
     Call<List<Assembly>> getIdByName(@Path("id") int id);
 
     @GET("/api/assembly/{id}")
-    Call<String> getById(@Path("id") int id);
+    Call<Assembly> getById(@Path("id") int id);
 
 }
