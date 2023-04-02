@@ -6,4 +6,5 @@
     <string name="voter_details">Voter Details</string>
     <string name="sex">Sex</string>
     <string name="back">Back</string>
+    <string name="voters">VOTERS</string>
 </resources>

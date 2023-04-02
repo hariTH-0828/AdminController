@@ -1,5 +1,7 @@
 package edu.mobile.voterlist.api;
 
+import java.util.List;
+
 import edu.mobile.voterlist.model.Person;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -13,6 +15,9 @@ public interface PersonApi {
 
     @POST("/api/person/setPerson")
     Call<Person> save(@Body Person person);
+
+    @GET("/api/person/getAll")
+    Call<List<Person>> getAll();
 
     @GET("/api/person/phone/{phone_number}")
     Call<Boolean> isExist(@Path("phone_number") String phoneNumber);

@@ -47,4 +47,10 @@
        <item name="background">@android:color/transparent</item>
        <item name="android:background">@android:color/transparent</item>
    </style>
+
+    <style name="ListPersonActivity" parent="Theme.MaterialComponents.Light">
+        <item name="android:statusBarColor">#D0D1D1</item>
+        <item name="android:label">@string/voters</item>
+        <item name="mock_labelColor">@color/black</item>
+    </style>
 </resources>

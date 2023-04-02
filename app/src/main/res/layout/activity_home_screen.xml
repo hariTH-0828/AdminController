@@ -81,9 +81,8 @@
                 android:layout_margin="20dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/search_voter"
-                android:onClick="onSearchVoter"
-                android:src="@drawable/search_voter"
-                android:visibility="invisible" />
+                android:onClick="onListVoter"
+                android:src="@drawable/list_voters" />
 
         </LinearLayout>
 

@@ -2,13 +2,9 @@ package edu.mobile.voterlist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 public class HomeScreen extends AppCompatActivity {
 
@@ -30,6 +26,11 @@ public class HomeScreen extends AppCompatActivity {
 
     public void onUpdateVoter(View view) {
         Intent switchView = new Intent(getApplicationContext(), UpdateActivity.class);
+        startActivity(switchView);
+    }
+
+    public void onListVoter(View view) {
+        Intent switchView = new Intent(getApplicationContext(), ListActivity.class);
         startActivity(switchView);
     }
 }
