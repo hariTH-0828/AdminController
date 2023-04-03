@@ -3,65 +3,37 @@ package edu.mobile.voterlist;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import java.io.BufferedInputStream;
-import java.io.InputStream;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-import edu.mobile.voterlist.api.DataFileApi;
-import edu.mobile.voterlist.model.DataFileInfo;
-import edu.mobile.voterlist.retrofit.RetrofitService;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import android.view.MenuItem;
 
 public class UpdateActivity extends AppCompatActivity {
-
-    Button getImageButton;
-    CircleImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
-        getImageButton = findViewById(R.id.getImage);
-        imageView = findViewById(R.id.circleImageView);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        int IconResId = (isDarkTheme(getApplicationContext()) ? R.drawable.ic_launcher_back_light_foreground : R.drawable.ic_launcher_back_foreground);
+        getSupportActionBar().setHomeAsUpIndicator(IconResId);
 
-        getImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getUserProfile(1);
-            }
-        });
     }
 
-    public void getUserProfile(int id) {
-        RetrofitService retrofitService = new RetrofitService();
-        DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
+    public boolean isDarkTheme(Context context) {
+        int nightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
 
-        dataFileApi.getUserProfileImage(id).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
-                    InputStream inputStream = response.body().byteStream();
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Image fetch failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

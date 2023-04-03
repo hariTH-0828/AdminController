@@ -31,6 +31,8 @@
             android:exported="false" />
         <activity
             android:name=".UpdateActivity"
+            android:theme="@style/Theme_updateActivity"
+            android:label="update voter"
             android:exported="false" />
         <activity
             android:name=".SearchResultActivity"
