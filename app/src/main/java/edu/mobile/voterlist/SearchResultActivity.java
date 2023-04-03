@@ -3,9 +3,12 @@ package edu.mobile.voterlist;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 public class SearchResultActivity extends AppCompatActivity {
 
     TextView name, fatherName, sex, date_of_birth, age, phoneNo, aadhaarNo, state, district, assembly, epicNo;
+    ImageView userProfilePhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,7 @@ public class SearchResultActivity extends AppCompatActivity {
         district = findViewById(R.id.voterDistrict);
         assembly = findViewById(R.id.voterAssembly);
         epicNo = findViewById(R.id.VoterEpicNumber);
+        userProfilePhoto = findViewById(R.id.user_image);
 
         displayResult();
     }
@@ -41,6 +46,7 @@ public class SearchResultActivity extends AppCompatActivity {
         String stateName = intent.getStringExtra("stateName");
         String districtName = intent.getStringExtra("districtName");
         String assemblyName = intent.getStringExtra("assemblyName");
+        byte[] imageBitmap = intent.getByteArrayExtra("bitmap");
 
         if(!stateName.isEmpty()) {
             state.setText(stateName);
@@ -54,6 +60,8 @@ public class SearchResultActivity extends AppCompatActivity {
             assembly.setText(assemblyName);
         } else Toast.makeText(this, "assembly is null", Toast.LENGTH_SHORT).show();
 
+        Bitmap userImageBitmap = BitmapFactory.decodeByteArray(imageBitmap, 0, imageBitmap.length);
+
         name.setText(personList.get(0));
         fatherName.setText(personList.get(1));
         sex.setText(personList.get(2));
@@ -62,6 +70,7 @@ public class SearchResultActivity extends AppCompatActivity {
         phoneNo.setText(personList.get(5));
         aadhaarNo.setText(personList.get(6));
         epicNo.setText(personList.get(7));
+        userProfilePhoto.setImageBitmap(userImageBitmap);
     }
 
     public void onDone(View view) {

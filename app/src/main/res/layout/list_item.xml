@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/ListPersonActivity"
     android:layout_height="match_parent">
 
@@ -37,11 +38,11 @@
                 android:id="@+id/userEpicNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_epic"
-                android:textColor="#C5C5C5"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:text="@string/label_epic"
+                android:textColor="#757575" />
 
         </LinearLayout>
 

@@ -21,16 +21,6 @@
             android:layout_margin="10dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:fontFamily="@font/notosans_bold"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="@string/voter_details"
-                android:textSize="25sp"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

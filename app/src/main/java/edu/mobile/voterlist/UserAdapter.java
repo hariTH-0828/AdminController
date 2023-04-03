@@ -43,7 +43,7 @@ public class UserAdapter extends ArrayAdapter<Person> {
         Person person = getItem(position);
         CircleImageView imageView = convertView.findViewById(R.id.userImageView);
 
-        int imageId = (int) person.getImageId().getId();
+        long imageId = person.getImageId().getId();
         RetrofitService retrofitService = new RetrofitService();
         DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
 

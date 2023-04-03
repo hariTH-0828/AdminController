@@ -6,18 +6,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 import edu.mobile.voterlist.api.AssemblyApi;
+import edu.mobile.voterlist.api.DataFileApi;
 import edu.mobile.voterlist.api.DistrictApi;
 import edu.mobile.voterlist.api.PersonApi;
 import edu.mobile.voterlist.api.StatesApi;
@@ -26,6 +34,7 @@ import edu.mobile.voterlist.model.District;
 import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.model.States;
 import edu.mobile.voterlist.retrofit.RetrofitService;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -129,6 +138,7 @@ public class SearchActivity extends AppCompatActivity {
                     getStateName(person.getStateId(), intent);
                     getDistrictName(person.getDistrictId(), intent);
                     getAssemblyName(person.getAssemblyId(), intent);
+                    getPersonImage(person.getImageId().getId(), intent);
                 }
             }
 
@@ -211,10 +221,36 @@ public class SearchActivity extends AppCompatActivity {
             public void onResponse(Call<Assembly> call, Response<Assembly> response) {
                 Assembly assembly = response.body();
                 intent.putExtra("assemblyName", assembly.getAssembly());
-                startActivity(intent);
             }
             @Override
             public void onFailure(Call<Assembly> call, Throwable t) {}
         });
+    }
+
+    private void getPersonImage(long id, Intent intent) {
+        RetrofitService retrofitService = new RetrofitService();
+        DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
+
+        dataFileApi.getUserProfileImage(id).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()) {
+                    InputStream inputStream = response.body().byteStream();
+                    Bitmap bitmapImage = BitmapFactory.decodeStream(inputStream);
+
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    bitmapImage.compress(Bitmap.CompressFormat.JPEG, 20, outputStream);
+                    byte[] byteArray = outputStream.toByteArray();
+
+                    intent.putExtra("bitmap", byteArray);
+                    startActivity(intent);
+                }
+            }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Image fetch failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
