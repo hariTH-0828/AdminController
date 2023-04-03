@@ -77,18 +77,6 @@ public class ListActivity extends AppCompatActivity {
         return nightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.search_action);
-        if(isDarkTheme(getApplicationContext())){
-            menuItem.setIcon(R.drawable.ic_launcher_search_light_foreground);
-        }else {
-            menuItem.setIcon(R.drawable.ic_launcher_search_foreground);
-        }
-        return true;
-    }*/
-
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
