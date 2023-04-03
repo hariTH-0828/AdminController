@@ -21,10 +21,13 @@
         <activity
             android:name=".ListActivity"
             android:theme="@style/ListPersonActivity"
+            android:label="@string/voters"
             android:parentActivityName=".HomeScreen"
             android:exported="false" />
         <activity
             android:name=".SearchActivity"
+            android:theme="@style/Theme_searchActivity"
+            android:label="@string/search_voter"
             android:exported="false" />
         <activity
             android:name=".UpdateActivity"
@@ -37,13 +40,14 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/create_voter"
+            android:theme="@style/Theme_MainActivity"/>
     </application>
 
 </manifest>

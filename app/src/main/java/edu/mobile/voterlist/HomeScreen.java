@@ -1,10 +1,15 @@
 package edu.mobile.voterlist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+
+import java.util.Objects;
 
 public class HomeScreen extends AppCompatActivity {
 

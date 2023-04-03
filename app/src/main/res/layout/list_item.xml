@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:theme="@style/ListPersonActivity"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -30,7 +31,6 @@
                 android:text="@string/label_name"
                 android:fontFamily="@font/josefin_regular"
                 android:textSize="19sp"
-                android:textColor="@color/black"
                 android:layout_weight="1"/>
 
             <TextView
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_epic"
-                android:textColor="@color/gray"
+                android:textColor="#C5C5C5"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"/>
