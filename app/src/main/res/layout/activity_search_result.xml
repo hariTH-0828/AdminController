@@ -323,16 +323,6 @@
                     android:textSize="18sp"
                     android:layout_weight="2"/>
             </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/done_button"
-                android:layout_margin="20dp"
-                android:contentDescription="@string/btn_push"
-                android:background="@android:color/transparent"
-                android:onClick="onDone"
-                android:layout_gravity="center"/>
         </LinearLayout>
     </ScrollView>
 

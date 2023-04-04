@@ -1,18 +1,22 @@
 package edu.mobile.voterlist;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SearchResultActivity extends AppCompatActivity {
 
@@ -23,6 +27,10 @@ public class SearchResultActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result);
+
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        int IconResId = (isDarkTheme(getApplicationContext()) ? R.drawable.ic_launcher_back_light_foreground : R.drawable.ic_launcher_back_foreground);
+        getSupportActionBar().setHomeAsUpIndicator(IconResId);
 
         name = findViewById(R.id.voterName);
         fatherName = findViewById(R.id.voterFatherName);
@@ -73,8 +81,19 @@ public class SearchResultActivity extends AppCompatActivity {
         userProfilePhoto.setImageBitmap(userImageBitmap);
     }
 
-    public void onDone(View view) {
-        Intent switchView = new Intent(getApplicationContext(), HomeScreen.class);
-        startActivity(switchView);
+    public boolean isDarkTheme(Context context) {
+        int nightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if(id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
