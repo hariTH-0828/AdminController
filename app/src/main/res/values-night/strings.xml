@@ -8,4 +8,6 @@
     <string name="back">Back</string>
     <string name="voters">VOTERS</string>
     <string name="search">Search</string>
+    <string name="update_profile">update</string>
+    <string name="button_cancel">cancel</string>
 </resources>

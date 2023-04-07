@@ -100,6 +100,7 @@ public class ListActivity extends AppCompatActivity {
                     personList.add(person.getPhoneNumber());
                     personList.add(person.getAadhaarNumber());
                     personList.add(person.getEpicNumber());
+                    personList.add(person.getAddress());
 
                     intent.putStringArrayListExtra("personList", personList);
 

@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class SearchResultActivity extends AppCompatActivity {
 
-    TextView name, fatherName, sex, date_of_birth, age, phoneNo, aadhaarNo, state, district, assembly, epicNo;
+    TextView name, fatherName, sex, date_of_birth, age, phoneNo, aadhaarNo, state, district, assembly, epicNo, address;
     ImageView userProfilePhoto;
 
     @Override
@@ -43,6 +43,7 @@ public class SearchResultActivity extends AppCompatActivity {
         district = findViewById(R.id.voterDistrict);
         assembly = findViewById(R.id.voterAssembly);
         epicNo = findViewById(R.id.VoterEpicNumber);
+        address = findViewById(R.id.voterAddress);
         userProfilePhoto = findViewById(R.id.user_image);
 
         displayResult();
@@ -77,6 +78,7 @@ public class SearchResultActivity extends AppCompatActivity {
         age.setText(personList.get(4));
         phoneNo.setText(personList.get(5));
         aadhaarNo.setText(personList.get(6));
+        address.setText(personList.get(8));
         epicNo.setText(personList.get(7));
         userProfilePhoto.setImageBitmap(userImageBitmap);
     }

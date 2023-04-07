@@ -1,25 +1,15 @@
 package edu.mobile.voterlist;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -29,6 +19,11 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputLayout;
@@ -45,14 +40,14 @@ import java.util.TimeZone;
 import edu.mobile.voterlist.api.AssemblyApi;
 import edu.mobile.voterlist.api.DataFileApi;
 import edu.mobile.voterlist.api.DistrictApi;
+import edu.mobile.voterlist.api.PersonApi;
+import edu.mobile.voterlist.api.StatesApi;
 import edu.mobile.voterlist.model.Assembly;
 import edu.mobile.voterlist.model.DataFileInfo;
 import edu.mobile.voterlist.model.District;
 import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.model.States;
-import edu.mobile.voterlist.api.PersonApi;
 import edu.mobile.voterlist.retrofit.RetrofitService;
-import edu.mobile.voterlist.api.StatesApi;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -65,11 +60,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Declarations
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
-    String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber;
+    String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber, address;
     int stateId, districtId, assemblyId, personId;
-    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge;
+    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge, editAddress;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
+    RadioButton maleTextView, femaleTextView, transTextView;
     Uri imageUri;
     Bitmap imageBitmap;
     Button browse;
@@ -87,17 +83,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         int IconResId = (isDarkTheme(getApplicationContext()) ? R.drawable.ic_launcher_back_light_foreground : R.drawable.ic_launcher_back_foreground);
         getSupportActionBar().setHomeAsUpIndicator(IconResId);
 
         // Assigning value to variable.
         editName = findViewById(R.id.editName);
         editFatherName = findViewById(R.id.editFatherName);
+        editAddress = findViewById(R.id.editAddress);
         editPhone = findViewById(R.id.editPhone);
         editEpic = findViewById(R.id.editEpic);
         editAadhaar = findViewById(R.id.editAadhaar);
         radioGroup = findViewById(R.id.groupRadio);
+        maleTextView = findViewById(R.id.radio_male);
+        femaleTextView = findViewById(R.id.radio_female);
+        transTextView = findViewById(R.id.radio_trans_gender);
         editDob = findViewById(R.id.editDateOfBirth);
         editAge = findViewById(R.id.editAge);
         autoCompleteStateView = findViewById(R.id.editState);
@@ -124,38 +124,24 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         loadStates();
-        autoCompleteStateView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                States sId = (States) parent.getItemAtPosition(position);
-                stateId = sId.getId();
-                loadDistrict(stateId);
-            }
+        autoCompleteStateView.setOnItemClickListener((parent, view, position, id) -> {
+            States sId = (States) parent.getItemAtPosition(position);
+            stateId = sId.getId();
+            loadDistrict(stateId);
         });
 
-        autoCompleteDistrictView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                District dId = (District) adapterView.getItemAtPosition(i);
-                districtId = dId.getId();
-                loadAssembly(districtId);
-            }
+        autoCompleteDistrictView.setOnItemClickListener((adapterView, view, i, l) -> {
+            District dId = (District) adapterView.getItemAtPosition(i);
+            districtId = dId.getId();
+            loadAssembly(districtId);
         });
 
-        autoCompleteAssemblyView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Assembly aId = (Assembly) adapterView.getItemAtPosition(i);
-                assemblyId = aId.getId();
-            }
+        autoCompleteAssemblyView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Assembly aId = (Assembly) adapterView.getItemAtPosition(i);
+            assemblyId = aId.getId();
         });
 
-        browse.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openGallery();
-            }
-        });
+        browse.setOnClickListener(view -> openGallery());
     }
 
     public boolean isDarkTheme(Context context) {
@@ -272,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
         person.setFatherName(fatherName);
         person.setPhoneNumber(phoneNo);
         person.setAadhaarNumber(aadhaar_number);
+        person.setAddress(address);
         person.setStateId(stateId);
         person.setDistrictId(districtId);
         person.setAssemblyId(assemblyId);
@@ -315,32 +302,42 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<DataFileInfo> call,@NonNull Response<DataFileInfo> response) {
                 DataFileInfo dataFileInfo = response.body();
-                updateProfile(dataFileInfo.getId(), pid);
+                updateProfile(Objects.requireNonNull(dataFileInfo).getId(), pid);
             }
 
             @Override
-            public void onFailure(Call<DataFileInfo> call, Throwable t) {
+            public void onFailure(@NonNull Call<DataFileInfo> call, @NonNull Throwable t) {
                 Toast.makeText(getApplicationContext(), "Save Image failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void updateProfile(long profileId, int userId) {
-        Toast.makeText(getApplicationContext(), "updateProfile : "+profileId+" "+userId, Toast.LENGTH_SHORT).show();
-
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
         personApi.associateProfilePhoto(userId, profileId).enqueue(new Callback<Boolean>() {
             @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
-                /*submitBtn.setImageResource(R.drawable.done_button);*/
-                resetPage();
+            public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
+                    resetPage();
+                }
             }
 
             @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "Profile added failed", Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<Boolean> call, @NonNull Throwable t) {
+                personApi.deletePerson(userId).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                        submitBtn.setImageResource(R.drawable.failed_button);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+
+                    }
+                });
+                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -354,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
         editPhone.setText("");
         editEpic.setText("");
         editAadhaar.setText("");
+        editAddress.setText("");
         imageView.setBackgroundResource(R.drawable.photo_frame);
         imageView.setImageResource(R.drawable.ic_launcher_photo_foreground);
         autoCompleteStateView.setText("");
@@ -365,18 +363,19 @@ public class MainActivity extends AppCompatActivity {
         editEpic.clearFocus();
     }
 
-    public void validateForm(View view) throws IOException {
+    public void validateForm(View view) {
         name = editName.getText().toString().trim();
         dateOfBirth = editDob.getText().toString();
         fatherName = editFatherName.getText().toString().trim();
         phoneNo = editPhone.getText().toString();
+        address = editAddress.getText().toString();
         age = editAge.getText().toString();
         aadhaar_number = editAadhaar.getText().toString();
         epicNumber = editEpic.getText().toString();
         int isImage = imageBitmap.getByteCount();
 
         if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
-                && !phoneNo.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
+                && !phoneNo.isEmpty() && !address.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
 
             savePerson();
 

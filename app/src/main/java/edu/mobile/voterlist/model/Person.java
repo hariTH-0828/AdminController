@@ -13,6 +13,7 @@ public class Person {
     private int districtId;
     private String epicNumber;
     private int assemblyId;
+    private String address;
     private String gender;
     private String phoneNumber;
     private String aadhaarNumber;
@@ -105,6 +106,15 @@ public class Person {
     public void setEpicNumber(String epicNumber) {
         this.epicNumber = epicNumber;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public int getId() {
         return id;
     }
