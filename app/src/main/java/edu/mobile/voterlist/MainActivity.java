@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -37,6 +36,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import edu.mobile.voterlist.api.AssemblyApi;
 import edu.mobile.voterlist.api.DataFileApi;
 import edu.mobile.voterlist.api.DistrictApi;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     Bitmap imageBitmap;
     Button browse;
     ImageButton submitBtn;
-    ImageView imageView;
+    CircleImageView imageView;
     RadioButton genderBtn;
     MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
     MaterialDatePicker<Long> materialDatePicker = builder.build();
@@ -279,7 +279,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
                     submitBtn.setImageResource(R.drawable.failed_button);
                 }
-
             }
             @Override
             public void onFailure(@NonNull Call<Person> call,@NonNull Throwable t) {
@@ -292,8 +291,9 @@ public class MainActivity extends AppCompatActivity {
         RetrofitService retrofitService = new RetrofitService();
         DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
 
-        Log.d("URI", uri.getPath());
+        // It will get the image path from the local storage
         File file = new File(uri.getPath());
+
         InputStream inputStream = getContentResolver().openInputStream(uri);
         RequestBody requestBody = new InputStreamRequestBody(MediaType.parse(getContentResolver().getType(uri)), inputStream);
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
