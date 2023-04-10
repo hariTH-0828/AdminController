@@ -61,4 +61,8 @@
        <item name="background">@android:color/transparent</item>
        <item name="android:background">@android:color/transparent</item>
    </style>
+
+    <style name="Theme_PhoneVerification">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

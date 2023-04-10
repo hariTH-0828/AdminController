@@ -10,4 +10,6 @@
     <string name="search">Search</string>
     <string name="update_profile">update</string>
     <string name="button_cancel">cancel</string>
+    <string name="hint_type_otp">Type OTP</string>
+    <string name="btn_verify_otp">verify OTP</string>
 </resources>

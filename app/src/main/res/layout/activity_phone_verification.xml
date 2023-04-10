@@ -1,60 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/otpVerificationLayout"
+    android:orientation="vertical"
+    android:background="@drawable/voter_search_dialogue"
     tools:context=".PhoneVerification">
+    
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:src="@drawable/decoration_phone_layout" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OTP Verification"
+        android:textColor="@color/black"
+        android:layout_margin="3dp"
+        android:fontFamily="@font/merriweather_regular"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="we will send otp to your registered mobile number"
+        android:textColor="@color/lightGray"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="5dp"
+        android:fontFamily="@font/merriweather_regular"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Phone Number"
-            android:textSize="20sp"
-            android:textColor="@color/gray"
-            android:layout_margin="10dp"/>
+        android:layout_height="wrap_content"
+        app:boxBackgroundMode="outline"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_gravity="center"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.274"
+        tools:ignore="NestedWeights">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textPhoneNumber"
+            android:id="@+id/textOtp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"/>
+            android:fontFamily="@font/josefin_bold"
+            android:hint="@string/hint_type_otp"
+            android:textColorHint="#78909C"
+            android:inputType="number"
+            android:textSize="15sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/generateOtp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GET OTP"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"/>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/verifyOtpLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textOtp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"/>
-
-            <Button
-                android:id="@+id/verifyOtp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="submit"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"/>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/verifyOtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_verify_otp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="50dp"
+        android:layout_marginTop="10dp"
+        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+</LinearLayout>

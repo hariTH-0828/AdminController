@@ -1,15 +1,20 @@
 package edu.mobile.voterlist;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,8 +22,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -29,6 +39,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.concurrent.Executor;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.mobile.voterlist.api.AssemblyApi;
@@ -48,8 +59,8 @@ import retrofit2.Response;
 
 public class UpdateActivity extends AppCompatActivity {
 
-    TextInputEditText inputVoterId;
-    Button submitButton, cancelButton, updateButton;
+    TextInputEditText inputVoterId, inputCode;
+    Button submitButton, cancelButton, updateButton, submitOtp;
     ScrollView resultView;
     Person person;
     States states;
@@ -57,7 +68,10 @@ public class UpdateActivity extends AppCompatActivity {
     Assembly assembly;
     TextView viewName, viewVoterId, viewFatherName, viewGender, viewDob, viewAge, viewPhoneNo, viewAadhaarNo, viewAddress, viewState, viewDistrict, viewAssembly;
     CircleImageView viewVoterImage;
-    String voterName, voterDob;
+    String voterName, voterDob, verificationId, otpCode;
+    View popupView;
+    PopupWindow popupWindow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +81,8 @@ public class UpdateActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         int IconResId = (isDarkTheme(getApplicationContext()) ? R.drawable.ic_launcher_back_light_foreground : R.drawable.ic_launcher_back_foreground);
         getSupportActionBar().setHomeAsUpIndicator(IconResId);
+
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
         inputVoterId = findViewById(R.id.editVoterId);
         submitButton = findViewById(R.id.sumbitButton);
@@ -105,8 +121,27 @@ public class UpdateActivity extends AppCompatActivity {
                     Objects.requireNonNull(currentDate);
 
                     if(currentDate.after(selectedDate)){
-                        Toast.makeText(getApplicationContext(), "Date OK", Toast.LENGTH_SHORT).show();
-                        updateUser();
+                        // First, send OTP to the user
+                        generateOTP(Objects.requireNonNull(viewPhoneNo.getText()).toString());
+
+                        popupView = inflater.inflate(R.layout.activity_phone_verification, null);
+                        submitOtp = popupView.findViewById(R.id.verifyOtp);
+                        inputCode = popupView.findViewById(R.id.textOtp);
+                        popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                        popupWindow.showAtLocation(view, Gravity.CENTER, 0,0);
+
+                        submitOtp.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if(Objects.requireNonNull(inputCode.getText()).toString().trim().isEmpty() ||
+                                        Objects.requireNonNull(inputCode.getText()).toString().trim().length() != 6) {
+                                    Toast.makeText(getApplicationContext(), "Invalid OTP", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                otpCode = Objects.requireNonNull(inputCode.getText()).toString().trim();
+                                verifyOTP(otpCode);
+                            }
+                        });
                     } else Toast.makeText(getApplicationContext(), "Date Error : Future date is selected", Toast.LENGTH_SHORT).show();
 
                 } catch (ParseException e) {
@@ -116,6 +151,46 @@ public class UpdateActivity extends AppCompatActivity {
         });
     }
 
+    private void generateOTP(String phoneNumber) {
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                "+91"+ phoneNumber,
+                60,
+                SECONDS,
+                UpdateActivity.this,
+                new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                    @Override
+                    public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                        Toast.makeText(UpdateActivity.this, "Code sent", Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onVerificationFailed(@NonNull FirebaseException e) {
+                        Toast.makeText(UpdateActivity.this, "Verification Failed : "+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onCodeSent(@NonNull String mVerificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                        verificationId = mVerificationId;
+                    }
+                }
+        );
+    }
+
+    private void verifyOTP(String Code) {
+        if(verificationId != null) {
+            Toast.makeText(this, "Code : "+Code, Toast.LENGTH_SHORT).show();
+            PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(
+                    verificationId,
+                    Code
+            );
+            FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential)
+                    .addOnCompleteListener(task -> {
+                        if(task.isSuccessful()) {
+                            updateUser();
+                        } else {
+                            Toast.makeText(UpdateActivity.this, "Verification Code entered was invalid", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(e -> Toast.makeText(UpdateActivity.this, "Verification Failed : "+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show());
+        }
+    }
 
     public boolean isDarkTheme(Context context) {
         int nightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -142,7 +217,6 @@ public class UpdateActivity extends AppCompatActivity {
 
             @SuppressLint("SimpleDateFormat")
             String format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.getTime());
-            //String formattedDate = format.format(calendar.getTime());
             viewDob.setText(format);
         });
     }
@@ -244,6 +318,7 @@ public class UpdateActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     Objects.requireNonNull(response.body());
                     Toast.makeText(UpdateActivity.this, "update success : "+response.body().getName(), Toast.LENGTH_SHORT).show();
+                    popupWindow.dismiss();
                 }
             }
             @Override

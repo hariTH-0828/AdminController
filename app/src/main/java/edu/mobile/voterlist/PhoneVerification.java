@@ -4,8 +4,12 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +29,7 @@ import com.google.gson.internal.bind.ObjectTypeAdapter;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.Inflater;
 
 public class PhoneVerification extends AppCompatActivity {
 
@@ -32,24 +37,34 @@ public class PhoneVerification extends AppCompatActivity {
     String phone_number, verificationId, code;
     Button requestOtp, verifyOtp;
     LinearLayoutCompat verifyOtpLayout;
-    String mVerificationId;
-    private FirebaseAuth mAuth;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_verification);
 
-        phoneNumber = findViewById(R.id.textPhoneNumber);
         otp = findViewById(R.id.textOtp);
-
-        requestOtp = findViewById(R.id.generateOtp);
         verifyOtp = findViewById(R.id.verifyOtp);
-        verifyOtpLayout = findViewById(R.id.verifyOtpLayout);
 
-        mAuth = FirebaseAuth.getInstance();
+        /*verifyOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.activity_phone_verification, null);
+                verifyOtp = popupView.findViewById(R.id.verifyOtp);
 
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+                popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+            }
+        });*/
+        
+       /* verifyOtp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(PhoneVerification.this, "Button clicked", Toast.LENGTH_SHORT).show();
+            }
+        });*/
 
         requestOtp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +101,6 @@ public class PhoneVerification extends AppCompatActivity {
             }
         });
 
-
         verifyOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +109,7 @@ public class PhoneVerification extends AppCompatActivity {
                     return;
                 }
                 code = Objects.requireNonNull(otp.getText()).toString().trim();
+
                 if(verificationId != null) {
                     PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(
                             verificationId,
@@ -115,10 +130,8 @@ public class PhoneVerification extends AppCompatActivity {
                                 }
                             });
                 }
-
             }
         });
-
     }
 
 }
