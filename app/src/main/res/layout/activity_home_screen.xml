@@ -57,8 +57,8 @@
                 android:layout_margin="20dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/search_voter"
-                android:onClick="onSearchVoter"
-                android:src="@drawable/search_voter" />
+                android:onClick="onListVoter"
+                android:src="@drawable/list_voters" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,10 +80,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
+                android:visibility="invisible"
                 android:background="@android:color/transparent"
-                android:contentDescription="@string/search_voter"
-                android:onClick="onListVoter"
-                android:src="@drawable/list_voters" />
+                android:contentDescription="@string/create_canditates"
+                android:onClick="onUpdateVoter"
+                android:src="@drawable/update_voter" />
+
 
         </LinearLayout>
 

@@ -24,11 +24,6 @@ public class HomeScreen extends AppCompatActivity {
         startActivity(swithView);
     }
 
-    public void onSearchVoter(View view) {
-        Intent switchView = new Intent(getApplicationContext(), SearchActivity.class);
-        startActivity(switchView);
-    }
-
     public void onUpdateVoter(View view) {
         Intent switchView = new Intent(getApplicationContext(), UpdateActivity.class);
         startActivity(switchView);

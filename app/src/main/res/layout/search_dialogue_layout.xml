@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:background="@drawable/voter_search_dialogue"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/voter_search_dialogue"
+        android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.317">
 
         <TextView
             android:id="@+id/textView2"
@@ -25,6 +28,7 @@
             android:fontFamily="@font/falling_sky_black"
             android:text="@string/voter_search"
             android:textSize="20sp"
+            android:layout_gravity="start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -76,6 +80,7 @@
         </LinearLayout>
 
         <FrameLayout
+            android:id="@+id/frameEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center">
@@ -103,16 +108,16 @@
                 tools:ignore="NestedWeights">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editInputEpic"
+                    android:id="@+id/epicInputTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="true"
                     android:fontFamily="@font/josefin_bold"
                     android:hint="@string/label_epic"
-                    android:textColorHint="#78909C"
-                    android:textSize="15sp" />
+                    android:inputType="text"
+                    android:textColor="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/buttonByEpic"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
@@ -146,27 +151,27 @@
                 tools:ignore="NestedWeights">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editAddressInput"
+                    android:id="@+id/aadhaarInputTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
+                    android:enabled="true"
                     android:hint="@string/label_aadhaar"
-                    android:textColorHint="#78909C"
-                    android:textSize="15sp" />
+                    android:textColor="@color/black"
+                    android:inputType="text" />
 
-<!--                <androidx.appcompat.widget.AppCompatImageButton
-                    android:id="@+id/buttonByAadhaar"
+                <androidx.appcompat.widget.AppCompatImageButton
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="20dp"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/search_voter"
                     android:onClick="onAadhaarClick"
-                    android:src="@drawable/search_button" />-->
+                    android:src="@drawable/search_button" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </FrameLayout>
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

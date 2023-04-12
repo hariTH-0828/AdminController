@@ -12,4 +12,5 @@
     <string name="button_cancel">cancel</string>
     <string name="hint_type_otp">Type OTP</string>
     <string name="btn_verify_otp">verify OTP</string>
+    <string name="create_canditates">create canditates</string>
 </resources>

@@ -7,6 +7,12 @@
     android:theme="@style/ListPersonActivity"
     tools:context=".ListActivity">
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/background_dim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible"
+        android:src="@drawable/background_dim"/>
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
