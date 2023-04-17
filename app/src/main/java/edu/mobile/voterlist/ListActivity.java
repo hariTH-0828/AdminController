@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -22,7 +19,6 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 
@@ -131,10 +127,12 @@ public class ListActivity extends AppCompatActivity {
 
                     intent.putStringArrayListExtra("personList", personList);
 
+                    if(person.getImageId() != null){
+                        getPersonImage(person.getImageId().getId(), intent);
+                    }
                     getStateName(person.getStateId(), intent);
                     getDistrictName(person.getDistrictId(), intent);
                     getAssemblyName(person.getAssemblyId(), intent);
-                    getPersonImage(person.getImageId().getId(), intent);
                 }
             }
 
@@ -185,6 +183,7 @@ public class ListActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<Assembly> call, @NonNull Response<Assembly> response) {
                 Assembly assembly = Objects.requireNonNull(response.body());
                 intent.putExtra("assemblyName", assembly.getAssembly());
+                startActivity(intent);
             }
             @Override
             public void onFailure(@NonNull Call<Assembly> call, @NonNull Throwable t) {}
@@ -207,7 +206,6 @@ public class ListActivity extends AppCompatActivity {
                     byte[] byteArray = outputStream.toByteArray();
 
                     intent.putExtra("bitmap", byteArray);
-                    startActivity(intent);
                 }
             }
             @Override
@@ -223,6 +221,7 @@ public class ListActivity extends AppCompatActivity {
         return nightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 
+    @SuppressLint("InflateParams")
     public void onSearchActionClicked() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         popupView = inflater.inflate(R.layout.search_dialogue_layout, null);
@@ -238,13 +237,7 @@ public class ListActivity extends AppCompatActivity {
         popupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         popupWindow.showAtLocation(getWindow().getDecorView(), Gravity.CENTER, 0, 0);
 
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                backgroundDim.setVisibility(View.INVISIBLE);
-            }
-        });
-        /*popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);*/
+        popupWindow.setOnDismissListener(() -> backgroundDim.setVisibility(View.INVISIBLE));
     }
 
     public void onSearchByClick(View view) {
@@ -306,7 +299,9 @@ public class ListActivity extends AppCompatActivity {
                     getStateName(person.getStateId(), intent);
                     getDistrictName(person.getDistrictId(), intent);
                     getAssemblyName(person.getAssemblyId(), intent);
-                    getPersonImage(person.getImageId().getId(), intent);
+                    if(person.getImageId() != null){
+                        getPersonImage(person.getImageId().getId(), intent);
+                    }
                 }
             }
             @Override

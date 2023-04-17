@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,7 +15,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -27,6 +27,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -295,7 +297,13 @@ public class MainActivity extends AppCompatActivity {
         File file = new File(uri.getPath());
 
         InputStream inputStream = getContentResolver().openInputStream(uri);
-        RequestBody requestBody = new InputStreamRequestBody(MediaType.parse(getContentResolver().getType(uri)), inputStream);
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 30, outputStream);
+        byte[] compressedData = outputStream.toByteArray();
+
+        InputStream compressedStream = new ByteArrayInputStream(compressedData);
+        RequestBody requestBody = new InputStreamRequestBody(MediaType.parse(getContentResolver().getType(uri)), compressedStream);
         MultipartBody.Part imagePart = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
         dataFileApi.save(imagePart).enqueue(new Callback<DataFileInfo>() {

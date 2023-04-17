@@ -239,7 +239,9 @@ public class UpdateActivity extends AppCompatActivity {
                         person = response.body();
 
                         resultView.setVisibility(View.VISIBLE);
-                        getPersonImage(person.getImageId().getId());
+                        if(person.getImageId() != null) {
+                            getPersonImage(person.getImageId().getId());
+                        }
                         viewName.setText(Objects.requireNonNull(person).getName());
                         viewVoterId.setText(person.getEpicNumber());
                         viewFatherName.setText(person.getFatherName());

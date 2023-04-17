@@ -16,9 +16,11 @@ import androidx.annotation.Nullable;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.mobile.voterlist.api.DataFileApi;
+import edu.mobile.voterlist.model.DataFileInfo;
 import edu.mobile.voterlist.model.Person;
 import edu.mobile.voterlist.retrofit.RetrofitService;
 import okhttp3.ResponseBody;
@@ -43,23 +45,27 @@ public class UserAdapter extends ArrayAdapter<Person> {
         Person person = getItem(position);
         CircleImageView imageView = convertView.findViewById(R.id.userImageView);
 
-        long imageId = person.getImageId().getId();
-        RetrofitService retrofitService = new RetrofitService();
-        DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
+        if(person.getImageId() != null) {
+            long imageId = person.getImageId().getId();
+            RetrofitService retrofitService = new RetrofitService();
+            DataFileApi dataFileApi = retrofitService.getRetrofit().create(DataFileApi.class);
 
-        dataFileApi.getUserProfileImage(imageId).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()) {
-                    InputStream inputStream = response.body().byteStream();
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    imageView.setImageBitmap(bitmap);
+            dataFileApi.getUserProfileImage(imageId).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    if(response.isSuccessful()) {
+                        InputStream inputStream = Objects.requireNonNull(response.body()).byteStream();
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        imageView.setImageBitmap(bitmap);
+                    }
                 }
-            }
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                }
+            });
+        }
+
+
 
         TextView userNameView = convertView.findViewById(R.id.userName);
         userNameView.setText(person.getName());
