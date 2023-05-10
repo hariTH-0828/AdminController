@@ -37,10 +37,12 @@
     <string name="voters">VOTERS</string>
     <string name="search">Search</string>
     <string name="update_profile">update</string>
+    <string name="update_voter">update voter</string>
+    <string name="list_voter">list voter</string>
     <string name="button_cancel">cancel</string>
     <string name="region_code">+91</string>
     <string name="btn_sendotp">send OTP</string>
     <string name="hint_type_otp">Type OTP</string>
     <string name="btn_verify_otp">verify OTP</string>
-    <string name="create_canditates">create canditates</string>
+    <string name="create_candidates">create candidates</string>
 </resources>
