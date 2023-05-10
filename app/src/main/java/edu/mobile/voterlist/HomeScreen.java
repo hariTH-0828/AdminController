@@ -1,9 +1,13 @@
 package edu.mobile.voterlist;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +32,13 @@ public class HomeScreen extends AppCompatActivity {
         listVoter = findViewById(R.id.onListVoter);
         createCandidate = findViewById(R.id.onCreateCandidate);
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            if(!isDarkTheme(getApplicationContext())){
+                actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
+            }
+        }
+
 
         createVoter.setOnClickListener(v -> {
             Intent switchView = new Intent(getApplicationContext(), MainActivity.class);
@@ -45,7 +56,13 @@ public class HomeScreen extends AppCompatActivity {
         });
 
         createCandidate.setOnClickListener(v -> {
-            Log.i("onClickButton", "Button click");
+            Intent switchView = new Intent(getApplicationContext(), CreateCandidates.class);
+            startActivity(switchView);
         });
+    }
+
+    public boolean isDarkTheme(Context context) {
+        int nightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return nightMode == Configuration.UI_MODE_NIGHT_YES;
     }
 }

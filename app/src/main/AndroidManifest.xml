@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <application
@@ -19,10 +20,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".CreateCandidates"
+            android:label="@string/create_candidates"
+            android:exported="false" />
+        <activity
             android:name=".PhoneVerification"
             android:exported="false"
-            android:theme="@style/Theme_PhoneVerification">
-        </activity>
+            android:theme="@style/Theme_PhoneVerification" />
         <activity
             android:name=".ListActivity"
             android:exported="false"
@@ -37,8 +41,7 @@
         <activity
             android:name=".UpdateActivity"
             android:exported="false"
-            android:label="update voter"
-            android:theme="@style/Theme_updateActivity" />
+            android:label="update voter"/>
         <activity
             android:name=".SearchResultActivity"
             android:exported="false"
@@ -48,6 +51,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -57,4 +61,5 @@
             android:label="@string/create_voter"
             android:theme="@style/Theme_MainActivity" />
     </application>
+
 </manifest>

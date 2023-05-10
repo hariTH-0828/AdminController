@@ -16,28 +16,29 @@
 
     <style name="Theme_activityMain" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="Theme_MainActivity" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="Theme_updateActivity" parent="Theme.MaterialComponents.Light">
-        <item name="android:fontFamily">@font/notosans_bold</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="Theme_searchActivity" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="ListPersonActivity" parent="Theme.MaterialComponents.Light">
         <item name="android:textColor">@color/black</item>
         <item name="android:label">@string/voters</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
         <item name="mock_labelColor">@color/black</item>
     </style>
 
     <style name="Theme_loadingScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="background">@android:color/darker_gray</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 
     <style name="Button.yellow" parent="ThemeOverlay.AppCompat">
@@ -59,10 +60,12 @@
 
     <style name="Theme_searchScreen">
        <item name="background">@android:color/transparent</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
        <item name="android:background">@android:color/transparent</item>
    </style>
 
     <style name="Theme_PhoneVerification">
         <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/poppins_medium</item>
     </style>
 </resources>

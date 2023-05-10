@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateCandidates">
+
+    <ScrollView
+        android:id="@+id/scrollview3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="3dp"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/candidate_image"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/photo_frame"
+                    android:src="@drawable/ic_launcher_user_foreground"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/desc_user_photo" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/browse_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/browseImg"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/custom_browse_button"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274"
+                tools:ignore="NestedWeights">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_name"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <RadioGroup
+                android:id="@+id/groupRadio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radio_male"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_male_selector"
+                    android:button="@android:color/transparent"
+                    android:drawableTop="@drawable/custom_male_icon_selector"
+                    android:drawablePadding="-20dp"
+                    android:fontFamily="@font/josefin_bold"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/radio_male"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/custom_radio_text" />
+
+                <RadioButton
+                    android:id="@+id/radio_female"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/custom_female_selector"
+                    android:button="@android:color/transparent"
+                    android:drawableTop="@drawable/custom_female_icon_selector"
+                    android:drawablePadding="-20dp"
+                    android:fontFamily="@font/josefin_bold"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/radio_female"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/custom_radio_text" />
+
+                <RadioButton
+                    android:id="@+id/radio_trans_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/custom_trans_selector"
+                    android:button="@android:color/transparent"
+                    android:drawableTop="@drawable/custom_trans_icon_selector"
+                    android:drawablePadding="-20dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/josefin_bold"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/radio_trans_gender"
+                    android:textAlignment="center"
+                    android:textColor="@drawable/custom_radio_text" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/textLayoutDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:clipChildren="true"
+                    android:weightSum="1"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.274">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editQualification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/josefin_bold"
+                        android:hint="@string/label_qualification"
+                        android:textColorHint="#757575"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                    app:endIconMode="custom"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="16dp"
+                    app:boxCornerRadiusBottomStart="16dp"
+                    app:boxCornerRadiusTopEnd="16dp"
+                    app:boxCornerRadiusTopStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.274">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/josefin_bold"
+                        android:hint="@string/label_age"
+                        android:inputType="number"
+                        android:textColorHint="#78909C"
+                        android:textSize="15sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                app:endIconMode="custom"
+                app:counterEnabled="true"
+                app:counterMaxLength="10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_phone"
+                    android:inputType="number"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="12"
+                android:layout_margin="10dp"
+                app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                app:endIconMode="custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editAadhaar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_aadhaar"
+                    android:inputType="number"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                android:layout_margin="10dp"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_address"
+                    android:inputType="text"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <AutoCompleteTextView
+                    android:id="@+id/editNativeDistrict"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
+                    android:hint="@string/label_state"
+                    android:textColorHint="#78909C" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <AutoCompleteTextView
+                    android:id="@+id/editDistrict"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
+                    android:hint="@string/label_district" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:id="@+id/onCreateVoter"
+                android:layout_width="180dp"
+                android:layout_height="50dp"
+                android:backgroundTint="#4BAE0D"
+                android:layout_margin="20dp"
+                android:background="@drawable/custom_create_candidate"
+                android:layout_gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_push"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/josefin_bold"
+                android:gravity="center"
+                android:text="@string/app_developTitleName"
+                android:textColor="@android:color/darker_gray" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,7 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -57,7 +60,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpdateActivity extends AppCompatActivity {
+public class
+UpdateActivity extends AppCompatActivity {
 
     TextInputEditText inputVoterId, inputCode;
     Button submitButton, cancelButton, updateButton, submitOtp;
@@ -81,6 +85,13 @@ public class UpdateActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         int IconResId = (isDarkTheme(getApplicationContext()) ? R.drawable.ic_launcher_back_light_foreground : R.drawable.ic_launcher_back_foreground);
         getSupportActionBar().setHomeAsUpIndicator(IconResId);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            if(!isDarkTheme(getApplicationContext())){
+                actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
+            }
+        }
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 
