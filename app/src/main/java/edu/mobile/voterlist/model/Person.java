@@ -7,7 +7,7 @@ public class Person {
     private DataFileInfo imageId;
     private String name;
     private String fatherName;
-    private int age;
+    private String dateOfJoining;
     private String dateOfBirth;
     private int stateId;
     private int districtId;
@@ -43,12 +43,12 @@ public class Person {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getAge() {
-        return age;
+    public String getDateOfJoining() {
+        return dateOfJoining;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setDateOfJoining(String dateOfJoining) {
+        this.dateOfJoining = dateOfJoining;
     }
 
     public String getAadhaarNumber() {

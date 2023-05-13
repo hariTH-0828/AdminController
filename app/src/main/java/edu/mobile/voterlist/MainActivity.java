@@ -16,6 +16,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -65,18 +66,18 @@ public class MainActivity extends AppCompatActivity {
 
     // Declarations
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
-    String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, age, epicNumber, address;
+    String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, dateOfJoining, epicNumber, address;
     int stateId, districtId, assemblyId, personId;
-    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAge, editAddress;
+    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editJoining, editAddress;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
-    RadioButton maleTextView, femaleTextView, transTextView;
+    RadioButton maleTextView, femaleTextView, transTextView, genderBtn;
     Uri imageUri;
     Bitmap imageBitmap;
     Button browse;
     ImageButton submitBtn;
+    ProgressBar progressBar;
     CircleImageView imageView;
-    RadioButton genderBtn;
     MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
     MaterialDatePicker<Long> materialDatePicker = builder.build();
     private ActivityResultLauncher<String> mGetContent;
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         femaleTextView = findViewById(R.id.radio_female);
         transTextView = findViewById(R.id.radio_trans_gender);
         editDob = findViewById(R.id.editDateOfBirth);
-        editAge = findViewById(R.id.editAge);
+        editJoining = findViewById(R.id.editJoining);
         autoCompleteStateView = findViewById(R.id.editState);
         autoCompleteDistrictView = findViewById(R.id.editDistrict);
         autoCompleteAssemblyView = findViewById(R.id.editAssembly);
@@ -119,6 +120,7 @@ public class MainActivity extends AppCompatActivity {
         datePicker = findViewById(R.id.textLayoutDate);
         imageView = findViewById(R.id.user_image);
         submitBtn = findViewById(R.id.pushBtn);
+        progressBar = findViewById(R.id.progress_circular);
         // Date picker Icon
         datePicker.setEndIconOnClickListener(this::onDatePicker);
 
@@ -205,9 +207,12 @@ public class MainActivity extends AppCompatActivity {
                 .enqueue(new Callback<List<States>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<States>> call, @NonNull Response<List<States>> response) {
-                        List<States> states = response.body();
-                        ArrayAdapter<States> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, states);
-                        autoCompleteStateView.setAdapter(adapter);
+                        if(response.isSuccessful()){
+                            progressBar.setVisibility(View.GONE);
+                            List<States> states = response.body();
+                            ArrayAdapter<States> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, states);
+                            autoCompleteStateView.setAdapter(adapter);
+                        }
                     }
 
                     @Override
@@ -220,14 +225,17 @@ public class MainActivity extends AppCompatActivity {
     private void loadDistrict(int stateId) {
         RetrofitService retrofitService = new RetrofitService();
         DistrictApi districtApi = retrofitService.getRetrofit().create(DistrictApi.class);
-
+        progressBar.setVisibility(View.VISIBLE);
         districtApi.getDistrictByStateId(stateId)
                 .enqueue(new Callback<List<District>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<District>> call, @NonNull Response<List<District>> response) {
-                        List<District> districtList = response.body();
-                        ArrayAdapter<District> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
-                        autoCompleteDistrictView.setAdapter(adapter);
+                        if(response.isSuccessful()){
+                            progressBar.setVisibility(View.GONE);
+                            List<District> districtList = response.body();
+                            ArrayAdapter<District> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, districtList);
+                            autoCompleteDistrictView.setAdapter(adapter);
+                        }
                     }
 
                     @Override
@@ -241,13 +249,17 @@ public class MainActivity extends AppCompatActivity {
         RetrofitService retrofitService = new RetrofitService();
         AssemblyApi assemblyApi = retrofitService.getRetrofit().create(AssemblyApi.class);
 
+        progressBar.setVisibility(View.VISIBLE);
         assemblyApi.getIdByName(districtId)
                 .enqueue(new Callback<List<Assembly>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Assembly>> call, @NonNull Response<List<Assembly>> response) {
-                        List<Assembly> assemblyList = response.body();
-                        ArrayAdapter<Assembly> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
-                        autoCompleteAssemblyView.setAdapter(adapter);
+                        if(response.isSuccessful()){
+                            progressBar.setVisibility(View.GONE);
+                            List<Assembly> assemblyList = response.body();
+                            ArrayAdapter<Assembly> adapter = new ArrayAdapter<>(getApplicationContext(), R.layout.dropdown_list, assemblyList);
+                            autoCompleteAssemblyView.setAdapter(adapter);
+                        }
                     }
 
                     @Override
@@ -266,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
         person.setName(name);
         person.setGender(getGender);
         person.setDateOfBirth(dateOfBirth);
-        person.setAge(Integer.parseInt(age));
+        person.setDateOfJoining(dateOfJoining);
         person.setFatherName(fatherName);
         person.setPhoneNumber(phoneNo);
         person.setAadhaarNumber(aadhaar_number);
@@ -364,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
         editName.setText("");
         radioGroup.clearCheck();
         editDob.setText("");
-        editAge.setText("");
+        editJoining.setText("");
         editFatherName.setText("");
         editPhone.setText("");
         editEpic.setText("");
@@ -387,12 +399,12 @@ public class MainActivity extends AppCompatActivity {
         fatherName = editFatherName.getText().toString().trim();
         phoneNo = editPhone.getText().toString();
         address = editAddress.getText().toString();
-        age = editAge.getText().toString();
+        dateOfJoining = editJoining.getText().toString();
         aadhaar_number = editAadhaar.getText().toString();
         epicNumber = editEpic.getText().toString();
         int isImage = imageBitmap.getByteCount();
 
-        if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !age.isEmpty() && !fatherName.isEmpty()
+        if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !dateOfJoining.isEmpty() && !fatherName.isEmpty()
                 && !phoneNo.isEmpty() && !address.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
 
             savePerson();

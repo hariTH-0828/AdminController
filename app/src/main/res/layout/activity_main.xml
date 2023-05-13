@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_anim"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
@@ -189,7 +201,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_weight="1"
-                    app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                    app:endIconDrawable="@drawable/baseline_date_range"
                     app:endIconMode="custom"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="16dp"
@@ -204,12 +216,13 @@
                     app:layout_constraintVertical_bias="0.274">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editAge"
+                        android:id="@+id/editJoining"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/josefin_bold"
-                        android:hint="@string/label_age"
-                        android:inputType="number"
+                        android:hint="@string/label_dateOfJoining"
+                        android:inputType="date"
+                        android:onClick="onDatePicker"
                         android:textColorHint="#78909C"
                         android:textSize="15sp" />
                 </com.google.android.material.textfield.TextInputLayout>
