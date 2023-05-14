@@ -127,7 +127,7 @@ public class SearchActivity extends AppCompatActivity {
                     personList.add(person.getFatherName());
                     personList.add(person.getGender());
                     personList.add(person.getDateOfBirth());
-                    personList.add(String.valueOf(person.getAge()));
+                    personList.add(person.getDateOfJoining());
                     personList.add(person.getPhoneNumber());
                     personList.add(person.getAadhaarNumber());
                     personList.add(person.getEpicNumber());
@@ -162,7 +162,7 @@ public class SearchActivity extends AppCompatActivity {
                     personList.add(person.getFatherName());
                     personList.add(person.getGender());
                     personList.add(person.getDateOfBirth());
-                    personList.add(String.valueOf(person.getAge()));
+                    personList.add(person.getDateOfJoining());
                     personList.add(person.getPhoneNumber());
                     personList.add(person.getAadhaarNumber());
                     personList.add(person.getEpicNumber());

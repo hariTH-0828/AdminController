@@ -8,11 +8,12 @@ public class Candidate {
     private DataFileInfo candidateImageId;
     private String partyName;
     private String qualification;
-    private String area;
     private float averageRating;
     private int age;
     private String gender;
-    private String nativeDistrict;
+    private int districtId;
+    private int stateId;
+    private String aadhaarNumber;
     private String background;
     private Contact contact;
     private List<Promises> promises;
@@ -54,12 +55,12 @@ public class Candidate {
         this.qualification = qualification;
     }
 
-    public String getArea() {
-        return area;
+    public String getAadhaarNumber() {
+        return aadhaarNumber;
     }
 
-    public void setArea(String area) {
-        this.area = area;
+    public void setAadhaarNumber(String aadhaarNumber) {
+        this.aadhaarNumber = aadhaarNumber;
     }
 
     public float getAverageRating() {
@@ -86,12 +87,20 @@ public class Candidate {
         this.gender = gender;
     }
 
-    public String getNativeDistrict() {
-        return nativeDistrict;
+    public int getDistrictId() {
+        return districtId;
     }
 
-    public void setNativeDistrict(String nativeDistrict) {
-        this.nativeDistrict = nativeDistrict;
+    public void setDistrictId(int districtId) {
+        this.districtId = districtId;
+    }
+
+    public int getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(int stateId) {
+        this.stateId = stateId;
     }
 
     public String getBackground() {

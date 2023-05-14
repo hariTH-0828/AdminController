@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class SearchResultActivity extends AppCompatActivity {
 
-    TextView name, fatherName, sex, date_of_birth, age, phoneNo, aadhaarNo, state, district, assembly, epicNo, address;
+    TextView name, fatherName, sex, date_of_birth, date_of_joining, phoneNo, aadhaarNo, state, district, assembly, epicNo, address;
     ImageView userProfilePhoto;
     Bitmap userImageBitmap;
 
@@ -37,7 +37,7 @@ public class SearchResultActivity extends AppCompatActivity {
         fatherName = findViewById(R.id.voterFatherName);
         sex = findViewById(R.id.voterSex);
         date_of_birth = findViewById(R.id.voterDateOfBirth);
-        age = findViewById(R.id.voterAge);
+        date_of_joining = findViewById(R.id.voterDateOfJoining);
         phoneNo = findViewById(R.id.voterPhone);
         aadhaarNo = findViewById(R.id.voterAadhaar);
         state = findViewById(R.id.voterState);
@@ -54,9 +54,10 @@ public class SearchResultActivity extends AppCompatActivity {
         Intent intent = getIntent();
         ArrayList<String> personList = intent.getStringArrayListExtra("personList");
 
-        String stateName = intent.getStringExtra("stateName");
-        String districtName = intent.getStringExtra("districtName");
-        String assemblyName = intent.getStringExtra("assemblyName");
+        String stateName = Objects.requireNonNull(intent.getStringExtra("stateName"));
+        String districtName = Objects.requireNonNull(intent.getStringExtra("districtName"));
+        String assemblyName = Objects.requireNonNull(intent.getStringExtra("assemblyName"));
+
         if(intent.getByteArrayExtra("bitmap") != null ){
             byte[] imageBitmap = intent.getByteArrayExtra("bitmap");
             userImageBitmap = BitmapFactory.decodeByteArray(imageBitmap, 0, imageBitmap.length);
@@ -79,7 +80,7 @@ public class SearchResultActivity extends AppCompatActivity {
         fatherName.setText(personList.get(1));
         sex.setText(personList.get(2));
         date_of_birth.setText(personList.get(3));
-        age.setText(personList.get(4));
+        date_of_joining.setText(personList.get(4));
         phoneNo.setText(personList.get(5));
         aadhaarNo.setText(personList.get(6));
         address.setText(personList.get(8));

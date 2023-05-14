@@ -153,13 +153,13 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_age"
                     android:layout_margin="5dp"
-                    android:textSize="18sp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:text="@string/label_dateOfJoining"
+                    android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/voterAge"
+                    android:id="@+id/voterDateOfJoining"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -308,7 +308,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_assembly"
+                    android:text="@string/label_assembly_constituency"
                     android:layout_margin="5dp"
                     android:textSize="18sp"
                     android:layout_weight="1"/>

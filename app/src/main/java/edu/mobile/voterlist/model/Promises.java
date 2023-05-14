@@ -1,6 +1,7 @@
 package edu.mobile.voterlist.model;
 
 public class Promises {
+
 	private int id;
 	private String description;
 	private String status;

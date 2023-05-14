@@ -442,7 +442,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
                     android:inputType="none"
-                    android:hint="@string/label_assembly" />
+                    android:hint="@string/label_assembly_constituency" />
             </com.google.android.material.textfield.TextInputLayout>
 
 

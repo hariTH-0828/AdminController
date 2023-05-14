@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".CreateCandidates">
 
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_anim"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollview3"
         android:layout_width="match_parent"
@@ -76,7 +88,7 @@
                 tools:ignore="NestedWeights">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editName"
+                    android:id="@+id/editCandidateName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -168,7 +180,7 @@
                     app:layout_constraintVertical_bias="0.274">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editQualification"
+                        android:id="@+id/editCandidateQualification"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/josefin_bold"
@@ -198,7 +210,7 @@
                     app:layout_constraintVertical_bias="0.274">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editAge"
+                        android:id="@+id/editCandidateAge"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/josefin_bold"
@@ -209,6 +221,33 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <AutoCompleteTextView
+                    android:id="@+id/editParty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:inputType="none"
+                    android:hint="@string/label_partyName"
+                    android:textColorHint="#78909C" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -238,6 +277,38 @@
                     android:fontFamily="@font/josefin_bold"
                     android:hint="@string/label_phone"
                     android:inputType="number"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:endIconDrawable="@drawable/ic_launcher_email_foreground"
+                app:endIconMode="custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editMailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_mailId"
+                    android:inputType="textEmailAddress"
                     android:maxWidth="480dp"
                     android:textColorHint="#78909C"
                     android:textSize="15sp" />
@@ -302,11 +373,115 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editAddress"
+                    android:id="@+id/editBackground"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
-                    android:hint="@string/label_address"
+                    android:hint="@string/label_background"
+                    android:inputType="text"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                android:layout_margin="10dp"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
+                app:helperText="Promises split by comma (,)"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPromises"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_promises"
+                    android:inputType="text"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                android:layout_margin="10dp"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
+                app:helperText="If candidate previously participate in election, then which position candidate participate"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editPositionHeld"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_positionHeld"
+                    android:inputType="text"
+                    android:maxWidth="480dp"
+                    android:textColorHint="#78909C"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                android:layout_margin="10dp"
+                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
+                app:endIconMode="custom"
+                app:helperText="If candidate previously participate in election, then how many vote candidate did gain"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editNumberOfVote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_numberOfVote"
                     android:inputType="text"
                     android:maxWidth="480dp"
                     android:textColorHint="#78909C"
@@ -332,7 +507,7 @@
                 app:layout_constraintVertical_bias="0.274">
 
                 <AutoCompleteTextView
-                    android:id="@+id/editNativeDistrict"
+                    android:id="@+id/editState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
@@ -368,7 +543,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <FrameLayout
-                android:id="@+id/onCreateVoter"
+                android:id="@+id/createCandidate"
                 android:layout_width="180dp"
                 android:layout_height="50dp"
                 android:backgroundTint="#4BAE0D"
@@ -384,16 +559,6 @@
                     android:layout_gravity="center"
                     android:gravity="center"/>
             </FrameLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/josefin_bold"
-                android:gravity="center"
-                android:text="@string/app_developTitleName"
-                android:textColor="@android:color/darker_gray" />
         </LinearLayout>
 
     </ScrollView>

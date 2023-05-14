@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
     private void savePerson() {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
-
+        progressBar.setVisibility(View.VISIBLE);
         Person person = new Person();
 
         person.setName(name);
@@ -291,18 +291,21 @@ public class MainActivity extends AppCompatActivity {
         personApi.save(person).enqueue(new Callback<Person>() {
             @Override
             public void onResponse(@NonNull Call<Person> call,@NonNull Response<Person> response) {
-                Person personResponse = response.body();
-                if(personResponse != null){
-                    personId = personResponse.getId();
-                    try {
-                        saveImage(imageUri, personId);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                if(response.isSuccessful()){
+                    Person personResponse = response.body();
+                    if(personResponse != null){
+                        personId = personResponse.getId();
+                        try {
+                            saveImage(imageUri, personId);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }else {
+                        Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
+                        submitBtn.setImageResource(R.drawable.failed_button);
                     }
-                }else {
-                    Toast.makeText(MainActivity.this, "You've already register", Toast.LENGTH_SHORT).show();
-                    submitBtn.setImageResource(R.drawable.failed_button);
                 }
+
             }
             @Override
             public void onFailure(@NonNull Call<Person> call,@NonNull Throwable t) {
@@ -349,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<Boolean> call, @NonNull Response<Boolean> response) {
                 if(response.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), "Profile added successfully", Toast.LENGTH_SHORT).show();
                     resetPage();
                 }

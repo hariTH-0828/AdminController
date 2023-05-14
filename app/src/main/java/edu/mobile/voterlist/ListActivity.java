@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -52,6 +54,7 @@ import retrofit2.Response;
 public class ListActivity extends AppCompatActivity {
     ListView listView;
     View popupView;
+    ProgressBar progressBar;
     PopupWindow popupWindow;
     RadioButton byEpic, byAadhaar ;
     AppCompatImageView backgroundDim;
@@ -78,6 +81,7 @@ public class ListActivity extends AppCompatActivity {
 
         listView = findViewById(R.id.listView);
         backgroundDim = findViewById(R.id.background_dim);
+        progressBar = findViewById(R.id.progress_circular);
         listPerson();
     }
 
@@ -90,12 +94,16 @@ public class ListActivity extends AppCompatActivity {
     public void listPerson() {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
+        progressBar.setVisibility(View.VISIBLE);
 
         personApi.getAll().enqueue(new Callback<List<Person>>() {
             @Override
             public void onResponse(@NonNull Call<List<Person>> call,@NonNull Response<List<Person>> response) {
-                List<Person> personList = response.body();
-                setAdapterView(personList);
+                if(response.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
+                    List<Person> personList = response.body();
+                    setAdapterView(personList);
+                }
             }
             @Override
             public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) {
@@ -107,6 +115,7 @@ public class ListActivity extends AppCompatActivity {
         UserAdapter userAdapter = new UserAdapter(getApplicationContext(), listPerson);
         listView.setAdapter(userAdapter);
         Intent switchView = new Intent(getApplicationContext(), SearchResultActivity.class);
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Object getPersonObject = parent.getAdapter().getItem(position);
             Person person = (Person) getPersonObject;
@@ -118,18 +127,17 @@ public class ListActivity extends AppCompatActivity {
     public void getPersonByEpic(String epicNumber, Intent intent) {
         RetrofitService retrofitService = new RetrofitService();
         PersonApi personApi = retrofitService.getRetrofit().create(PersonApi.class);
-
+        progressBar.setVisibility(View.VISIBLE);
         personApi.getPersonByEpic(epicNumber).enqueue(new Callback<Person>() {
             @Override
             public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
                 if(response.isSuccessful()) {
                     Person person = response.body();
-                    assert person != null;
-                    personList.add(person.getName());
+                    personList.add(Objects.requireNonNull(person).getName());
                     personList.add(person.getFatherName());
                     personList.add(person.getGender());
                     personList.add(person.getDateOfBirth());
-                    personList.add(String.valueOf(person.getAge()));
+                    personList.add(person.getDateOfJoining());
                     personList.add(person.getPhoneNumber());
                     personList.add(person.getAadhaarNumber());
                     personList.add(person.getEpicNumber());
@@ -158,11 +166,14 @@ public class ListActivity extends AppCompatActivity {
         statesApi.getStatesById(id).enqueue(new Callback<States>() {
             @Override
             public void onResponse(@NonNull Call<States> call, @NonNull Response<States> response) {
-                States states = Objects.requireNonNull(response.body());
-                intent.putExtra("stateName", states.getState());
+                if(response.isSuccessful()){
+                    States states = Objects.requireNonNull(response.body());
+                    intent.putExtra("stateName", states.getState());
+                }
             }
             @Override
             public void onFailure(@NonNull Call<States> call, @NonNull Throwable t) {
+                Log.d("error", t.getLocalizedMessage());
             }
         });
     }
@@ -191,9 +202,12 @@ public class ListActivity extends AppCompatActivity {
         assemblyApi.getById(id).enqueue(new Callback<Assembly>() {
             @Override
             public void onResponse(@NonNull Call<Assembly> call, @NonNull Response<Assembly> response) {
-                Assembly assembly = Objects.requireNonNull(response.body());
-                intent.putExtra("assemblyName", assembly.getAssembly());
-                startActivity(intent);
+                if(response.isSuccessful()){
+                    Assembly assembly = Objects.requireNonNull(response.body());
+                    intent.putExtra("assemblyName", assembly.getAssembly());
+                    progressBar.setVisibility(View.GONE);
+                    startActivity(intent);
+                }
             }
             @Override
             public void onFailure(@NonNull Call<Assembly> call, @NonNull Throwable t) {}
@@ -298,7 +312,7 @@ public class ListActivity extends AppCompatActivity {
                     personList.add(person.getFatherName());
                     personList.add(person.getGender());
                     personList.add(person.getDateOfBirth());
-                    personList.add(String.valueOf(person.getAge()));
+                    personList.add(person.getDateOfJoining());
                     personList.add(person.getPhoneNumber());
                     personList.add(person.getAadhaarNumber());
                     personList.add(person.getEpicNumber());

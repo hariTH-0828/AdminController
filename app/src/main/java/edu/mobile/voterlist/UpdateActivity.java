@@ -25,7 +25,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseException;
@@ -42,7 +41,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.Executor;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.mobile.voterlist.api.AssemblyApi;
@@ -70,7 +68,7 @@ UpdateActivity extends AppCompatActivity {
     States states;
     District district;
     Assembly assembly;
-    TextView viewName, viewVoterId, viewFatherName, viewGender, viewDob, viewAge, viewPhoneNo, viewAadhaarNo, viewAddress, viewState, viewDistrict, viewAssembly;
+    TextView viewName, viewVoterId, viewFatherName, viewGender, viewDob, viewDoj, viewPhoneNo, viewAadhaarNo, viewAddress, viewState, viewDistrict, viewAssembly;
     CircleImageView viewVoterImage;
     String voterName, voterDob, verificationId, otpCode;
     View popupView;
@@ -106,7 +104,7 @@ UpdateActivity extends AppCompatActivity {
         viewFatherName = findViewById(R.id.setFatherName);
         viewGender = findViewById(R.id.setGender);
         viewDob = findViewById(R.id.setDateOfBirth);
-        viewAge = findViewById(R.id.setAge);
+        viewDoj = findViewById(R.id.setDoj);
         viewPhoneNo = findViewById(R.id.setPhoneNumber);
         viewAadhaarNo = findViewById(R.id.setAadhaarNumber);
         viewAddress = findViewById(R.id.setAddress);
@@ -258,7 +256,7 @@ UpdateActivity extends AppCompatActivity {
                         viewFatherName.setText(person.getFatherName());
                         viewGender.setText(person.getGender());
                         viewDob.setText(person.getDateOfBirth());
-                        viewAge.setText(String.valueOf(person.getAge()));
+                        viewDoj.setText(person.getDateOfJoining());
                         viewAadhaarNo.setText(person.getAadhaarNumber());
                         viewPhoneNo.setText(person.getPhoneNumber());
                         viewAddress.setText(person.getAddress());
@@ -374,7 +372,7 @@ UpdateActivity extends AppCompatActivity {
         viewFatherName.setText("");
         viewGender.setText("");
         viewDob.setText("");
-        viewAge.setText("");
+        viewDoj.setText("");
         viewPhoneNo.setText("");
         viewAadhaarNo.setText("");
         viewAddress.setText("");

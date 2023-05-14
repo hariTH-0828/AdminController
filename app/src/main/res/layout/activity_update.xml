@@ -236,7 +236,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/layoutAge"
+                        android:id="@+id/layoutDoj"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -249,10 +249,10 @@
                             android:layout_weight="1"
                             android:fontFamily="@font/merriweather_regular"
                             android:textSize="16sp"
-                            android:text="@string/label_age"/>
+                            android:text="@string/label_dateOfJoining"/>
 
                         <TextView
-                            android:id="@+id/setAge"
+                            android:id="@+id/setDoj"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
@@ -411,7 +411,7 @@
                                 android:layout_margin="5dp"
                                 android:textSize="16sp"
                                 android:fontFamily="@font/merriweather_regular"
-                                android:text="@string/label_assemblywo"/>
+                                android:text="@string/label_assembly"/>
 
                             <TextView
                                 android:id="@+id/setAssembly"

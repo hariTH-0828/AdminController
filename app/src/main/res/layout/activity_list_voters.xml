@@ -7,6 +7,18 @@
     android:theme="@style/ListPersonActivity"
     tools:context=".ListActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_anim"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/background_dim"
         android:layout_width="match_parent"
