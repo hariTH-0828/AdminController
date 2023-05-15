@@ -278,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
         person.setName(name);
         person.setGender(getGender);
         person.setDateOfBirth(dateOfBirth);
+        // TODO : change user enter field to add date by system
         person.setDateOfJoining(dateOfJoining);
         person.setFatherName(fatherName);
         person.setPhoneNumber(phoneNo);

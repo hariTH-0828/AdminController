@@ -385,39 +385,34 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
+                android:id="@+id/layout_promiseList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="16dp"
-                app:boxCornerRadiusBottomStart="16dp"
-                app:boxCornerRadiusTopEnd="16dp"
-                app:boxCornerRadiusTopStart="16dp"
-                android:layout_margin="10dp"
-                app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
-                app:endIconMode="custom"
-                app:helperText="Promises split by comma (,)"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.274">
+                android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editPromises"
-                    android:layout_width="match_parent"
+            </LinearLayout>
+            <FrameLayout
+                android:id="@+id/addFieldPromise"
+                android:layout_width="80dp"
+                android:layout_height="35dp"
+                android:backgroundTint="#4BAE0D"
+                android:layout_margin="20dp"
+                android:background="@drawable/custom_browse_button"
+                android:layout_gravity="start"
+                tools:ignore="RtlHardcoded">
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/josefin_bold"
-                    android:hint="@string/label_promises"
-                    android:inputType="text"
-                    android:maxWidth="480dp"
-                    android:textColorHint="#78909C"
-                    android:textSize="15sp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:text="add"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </FrameLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

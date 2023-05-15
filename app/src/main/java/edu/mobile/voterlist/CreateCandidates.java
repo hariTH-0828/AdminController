@@ -1,5 +1,6 @@
 package edu.mobile.voterlist;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -16,6 +17,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,7 +29,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.content.ContextCompat;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -34,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -62,7 +69,7 @@ import retrofit2.Response;
 public class CreateCandidates extends AppCompatActivity {
 
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompletePartyName;
-    String name, gender, qualification, age, phoneNumber, aadhaarNumber, email, description, promise, positionHeld = "", voteGain = "";
+    String name, gender, qualification, age, phoneNumber, aadhaarNumber, promise, promiseStatus, email, description, positionHeld = "", voteGain = "";
     FrameLayout createCandidate;
     int stateId, districtId, candidateId, partiesId;
     CircleImageView imageView;
@@ -72,9 +79,13 @@ public class CreateCandidates extends AppCompatActivity {
     RadioButton maleTextView, femaleTextView, transTextView, genderBtn;
     Bitmap imageBitmap;
     ProgressBar progressBar;
-    boolean status = false;
     private ActivityResultLauncher<String> mGetContent;
-    EditText editName, editPhone, editAge, editAadhaar, editQualification, editPromises, editMail, editDescription, editPositionHeld, editVoteGain;
+    EditText editName, editPhone, editAge, editAadhaar, editQualification, editMail, editDescription, editPositionHeld, editVoteGain;
+    LinearLayout layout_promiseList;
+    FrameLayout addFieldButton;
+    View promiseView;
+
+    List<String> list_status = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +101,9 @@ public class CreateCandidates extends AppCompatActivity {
         editQualification = findViewById(R.id.editCandidateQualification);
         editAadhaar = findViewById(R.id.editAadhaar);
         editMail = findViewById(R.id.editMailId);
-        editPromises = findViewById(R.id.editPromises);
+        layout_promiseList = findViewById(R.id.layout_promiseList);
+        addFieldButton = findViewById(R.id.addFieldPromise);
         editAge = findViewById(R.id.editCandidateAge);
-        editPromises = findViewById(R.id.editPromises);
         editDescription = findViewById(R.id.editBackground);
         progressBar = findViewById(R.id.progress_circular);
         editPositionHeld = findViewById(R.id.editPositionHeld);
@@ -104,6 +115,10 @@ public class CreateCandidates extends AppCompatActivity {
         createCandidate = findViewById(R.id.createCandidate);
         imageView = findViewById(R.id.candidate_image);
 
+        list_status.add("FULFILLED");
+        list_status.add("NOT_FULFILLED");
+        list_status.add("ON_PROGRESS");
+
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         int IconResId = (isDarkTheme(getApplicationContext()) ? R.drawable.ic_launcher_back_light_foreground : R.drawable.ic_launcher_back_foreground);
         getSupportActionBar().setHomeAsUpIndicator(IconResId);
@@ -114,6 +129,13 @@ public class CreateCandidates extends AppCompatActivity {
                 actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.white)));
             }
         }
+
+        addFieldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addView();
+            }
+        });
 
         createCandidate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +160,7 @@ public class CreateCandidates extends AppCompatActivity {
 
         loadStates();
         loadParties();
+        addView();
         autoCompleteStateView.setOnItemClickListener((parent, view, position, id) -> {
             States sId = (States) parent.getItemAtPosition(position);
             stateId = sId.getId();
@@ -155,6 +178,32 @@ public class CreateCandidates extends AppCompatActivity {
         });
 
         browse.setOnClickListener(view -> openGallery());
+    }
+
+    private void addView() {
+        @SuppressLint("InflateParams") View promiseView = getLayoutInflater().inflate(R.layout.layout_promise_field, null, false);
+        TextInputEditText editPromise = promiseView.findViewById(R.id.editPromise);
+        AppCompatSpinner spinner = promiseView.findViewById(R.id.promiseStatus);
+        FrameLayout removeFieldBtn = promiseView.findViewById(R.id.removeFieldPromise);
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, list_status);
+        spinner.setAdapter(statusAdapter);
+
+        removeFieldBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(layout_promiseList.getChildCount() > 1){
+                    removeField(promiseView);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Cannot delete this field", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        layout_promiseList.addView(promiseView);
+    }
+
+    private void removeField(View view){
+        layout_promiseList.removeView(view);
     }
 
     private void loadParties() {
@@ -263,13 +312,15 @@ public class CreateCandidates extends AppCompatActivity {
         email = editMail.getText().toString().trim();
         phoneNumber = editPhone.getText().toString().trim();
         description = editDescription.getText().toString().trim();
-        promise = editPromises.getText().toString().trim();
         positionHeld = editPositionHeld.getText().toString().trim();
         voteGain = editVoteGain.getText().toString().trim();
         aadhaarNumber = editAadhaar.getText().toString();
         int isImage = imageBitmap.getByteCount();
 
-        if (isImage > 0 && !name.isEmpty() && !gender.isEmpty() && !age.isEmpty() && !qualification.isEmpty() && !email.isEmpty()
+        promiseView = layout_promiseList.getChildAt(0);
+        setPromises(promiseView);
+
+        if (isImage > 0 && !name.isEmpty() && !gender.isEmpty() && !age.isEmpty() && !qualification.isEmpty() && !email.isEmpty() && !promise.isEmpty() && !promiseStatus.isEmpty()
                 && !phoneNumber.isEmpty() && !description.isEmpty() && stateId != 0 && districtId != 0 && partiesId != 0 && !aadhaarNumber.isEmpty()) {
 
             saveCandidate();
@@ -290,12 +341,16 @@ public class CreateCandidates extends AppCompatActivity {
         pastPerformance.setPositionHeld(positionHeld);
         pastPerformance.setNumberOfVote(Integer.parseInt(voteGain));
 
-        Promises promises = new Promises();
-        promises.setDescription("");
-        promises.setStatus("");
-
         List<Promises> promisesList = new ArrayList<>();
-        promisesList.add(promises);
+        for(int i = 0; i < layout_promiseList.getChildCount(); i++){
+            promiseView = layout_promiseList.getChildAt(i);
+            setPromises(promiseView);
+            Promises promises = new Promises();
+            promises.setDescription(promise);
+            promises.setStatus(promiseStatus);
+
+            promisesList.add(promises);
+        }
 
         Candidate candidate = new Candidate();
 
@@ -337,6 +392,16 @@ public class CreateCandidates extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "profile added failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void setPromises(View promiseView){
+        promise = "";
+        promiseStatus = "";
+        TextInputEditText getPromise = promiseView.findViewById(R.id.editPromise);
+        AppCompatSpinner getStatus = promiseView.findViewById(R.id.promiseStatus);
+        promise = Objects.requireNonNull(getPromise.getText()).toString().trim();
+        promiseStatus = list_status.get(getStatus.getSelectedItemPosition());
+        Toast.makeText(getApplicationContext(), promiseStatus, Toast.LENGTH_SHORT).show();
     }
 
     private void saveImage(Uri uri, int pid) throws IOException {
