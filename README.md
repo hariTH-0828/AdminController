@@ -14,6 +14,8 @@ Mobile voting system - admin controller
 <br />
 <br />
 
+**Server :** https://github.com/hariTH-0828/Client-server_Spring-Boot  
+This is the Spring boot server package use this to run app properly.
 # PENDING WORKING  
 
 ### Login page    
