@@ -6,23 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ProgressBar
-        android:id="@+id/progress_circular"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center"
-        android:indeterminateDrawable="@drawable/custom_progress_bar_anim"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -38,8 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -49,21 +40,21 @@
                     android:id="@+id/user_image"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/photo_frame"
-                    android:src="@drawable/ic_launcher_user_foreground"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/desc_user_photo" />
+                    android:contentDescription="@string/desc_user_photo"
+                    android:src="@drawable/ic_launcher_user_foreground" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/browse_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/browseImg"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/custom_browse_button"
-                    android:textColor="@color/black"/>
+                    android:text="@string/browseImg"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
 
@@ -123,8 +114,8 @@
                     android:id="@+id/radio_female"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="10dp"
+                    android:layout_weight="1"
                     android:background="@drawable/custom_female_selector"
                     android:button="@android:color/transparent"
                     android:drawableTop="@drawable/custom_female_icon_selector"
@@ -140,11 +131,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:layout_weight="1"
                     android:background="@drawable/custom_trans_selector"
                     android:button="@android:color/transparent"
                     android:drawableTop="@drawable/custom_trans_icon_selector"
                     android:drawablePadding="-20dp"
-                    android:layout_weight="1"
                     android:fontFamily="@font/josefin_bold"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/radio_trans_gender"
@@ -152,83 +143,43 @@
                     android:textColor="@drawable/custom_radio_text" />
             </RadioGroup>
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textLayoutDate"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:clipChildren="true"
+                android:onClick="onDatePicker"
+                android:weightSum="1"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:endIconContentDescription="datePicker"
+                app:endIconDrawable="@drawable/baseline_date_range"
+                app:endIconMode="custom"
+                app:helperText="@string/date_format"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.274">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textLayoutDate"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editDateOfBirth"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:clipChildren="true"
+                    android:fontFamily="@font/josefin_bold"
+                    android:hint="@string/label_dob"
+                    android:inputType="date"
                     android:onClick="onDatePicker"
-                    android:weightSum="1"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:endIconContentDescription="datePicker"
-                    app:endIconDrawable="@drawable/baseline_date_range"
-                    app:endIconMode="custom"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.274">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editDateOfBirth"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/josefin_bold"
-                        android:hint="@string/label_dob"
-                        android:inputType="date"
-                        android:onClick="onDatePicker"
-                        android:textColorHint="#757575"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    app:endIconDrawable="@drawable/baseline_date_range"
-                    app:endIconMode="custom"
-                    app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="16dp"
-                    app:boxCornerRadiusBottomStart="16dp"
-                    app:boxCornerRadiusTopEnd="16dp"
-                    app:boxCornerRadiusTopStart="16dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.274">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editJoining"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/josefin_bold"
-                        android:hint="@string/label_dateOfJoining"
-                        android:inputType="date"
-                        android:onClick="onDatePicker"
-                        android:textColorHint="#78909C"
-                        android:textSize="15sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
+                    android:textColorHint="#757575"
+                    android:textSize="15sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -271,10 +222,10 @@
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                app:endIconDrawable="@drawable/ic_launcher_number_foreground"
-                app:endIconMode="custom"
                 app:counterEnabled="true"
                 app:counterMaxLength="10"
+                app:endIconDrawable="@drawable/ic_launcher_number_foreground"
+                app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
@@ -299,6 +250,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 app:boxBackgroundMode="outline"
@@ -308,7 +260,6 @@
                 app:boxCornerRadiusTopStart="16dp"
                 app:counterEnabled="true"
                 app:counterMaxLength="12"
-                android:layout_margin="10dp"
                 app:endIconDrawable="@drawable/ic_launcher_number_foreground"
                 app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -335,6 +286,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 app:boxBackgroundMode="outline"
@@ -342,7 +294,6 @@
                 app:boxCornerRadiusBottomStart="16dp"
                 app:boxCornerRadiusTopEnd="16dp"
                 app:boxCornerRadiusTopStart="16dp"
-                android:layout_margin="10dp"
                 app:endIconDrawable="@drawable/ic_launcher_keyboard_foreground"
                 app:endIconMode="custom"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -387,8 +338,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
-                    android:inputType="none"
                     android:hint="@string/label_state"
+                    android:inputType="none"
                     android:textColorHint="#78909C" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -414,8 +365,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
-                    android:inputType="none"
-                    android:hint="@string/label_district" />
+                    android:hint="@string/label_district"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--Dropdown -> Assembly Constitution-->
@@ -441,8 +392,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/josefin_bold"
-                    android:inputType="none"
-                    android:hint="@string/label_assembly_constituency" />
+                    android:hint="@string/label_assembly_constituency"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -482,14 +433,14 @@
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/pushBtn"
                 android:layout_width="180dp"
-                android:contentDescription="@string/btn_push"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:src="@drawable/submit_button"
                 android:background="@android:color/transparent"
-                android:onClick="validateForm" />
+                android:contentDescription="@string/btn_push"
+                android:onClick="validateForm"
+                android:src="@drawable/submit_button" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -504,6 +455,18 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/custom_progress_bar_anim"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

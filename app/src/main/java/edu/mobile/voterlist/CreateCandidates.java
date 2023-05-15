@@ -401,7 +401,6 @@ public class CreateCandidates extends AppCompatActivity {
         AppCompatSpinner getStatus = promiseView.findViewById(R.id.promiseStatus);
         promise = Objects.requireNonNull(getPromise.getText()).toString().trim();
         promiseStatus = list_status.get(getStatus.getSelectedItemPosition());
-        Toast.makeText(getApplicationContext(), promiseStatus, Toast.LENGTH_SHORT).show();
     }
 
     private void saveImage(Uri uri, int pid) throws IOException {

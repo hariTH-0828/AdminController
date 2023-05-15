@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     AutoCompleteTextView autoCompleteStateView, autoCompleteDistrictView, autoCompleteAssemblyView;
     String name, fatherName, phoneNo, aadhaar_number, getGender, dateOfBirth, dateOfJoining, epicNumber, address;
     int stateId, districtId, assemblyId, personId;
-    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editJoining, editAddress;
+    EditText editName, editFatherName, editPhone, editEpic, editDob, editAadhaar, editAddress;
     TextInputLayout datePicker;
     RadioGroup radioGroup;
     RadioButton maleTextView, femaleTextView, transTextView, genderBtn;
@@ -112,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         femaleTextView = findViewById(R.id.radio_female);
         transTextView = findViewById(R.id.radio_trans_gender);
         editDob = findViewById(R.id.editDateOfBirth);
-        editJoining = findViewById(R.id.editJoining);
         autoCompleteStateView = findViewById(R.id.editState);
         autoCompleteDistrictView = findViewById(R.id.editDistrict);
         autoCompleteAssemblyView = findViewById(R.id.editAssembly);
@@ -123,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_circular);
         // Date picker Icon
         datePicker.setEndIconOnClickListener(this::onDatePicker);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        dateOfJoining = format.format(new Date());
+        Log.d("Date", dateOfJoining);
+
 
         mGetContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 uri -> {
@@ -278,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
         person.setName(name);
         person.setGender(getGender);
         person.setDateOfBirth(dateOfBirth);
-        // TODO : change user enter field to add date by system
         person.setDateOfJoining(dateOfJoining);
         person.setFatherName(fatherName);
         person.setPhoneNumber(phoneNo);
@@ -381,7 +385,6 @@ public class MainActivity extends AppCompatActivity {
         editName.setText("");
         radioGroup.clearCheck();
         editDob.setText("");
-        editJoining.setText("");
         editFatherName.setText("");
         editPhone.setText("");
         editEpic.setText("");
@@ -404,12 +407,11 @@ public class MainActivity extends AppCompatActivity {
         fatherName = editFatherName.getText().toString().trim();
         phoneNo = editPhone.getText().toString();
         address = editAddress.getText().toString();
-        dateOfJoining = editJoining.getText().toString();
         aadhaar_number = editAadhaar.getText().toString();
         epicNumber = editEpic.getText().toString();
         int isImage = imageBitmap.getByteCount();
 
-        if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !dateOfJoining.isEmpty() && !fatherName.isEmpty()
+        if (isImage > 0 && !name.isEmpty() && !getGender.isEmpty() && !dateOfBirth.isEmpty() && !fatherName.isEmpty()
                 && !phoneNo.isEmpty() && !address.isEmpty() && !aadhaar_number.isEmpty() && stateId != 0 && districtId != 0 && assemblyId != 0 && !epicNumber.isEmpty()) {
 
             savePerson();

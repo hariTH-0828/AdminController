@@ -13,4 +13,5 @@
     <string name="hint_type_otp">Type OTP</string>
     <string name="btn_verify_otp">verify OTP</string>
     <string name="create_candidates">create candidates</string>
+    <string name="date_format">YYYY-MM-DD</string>
 </resources>
